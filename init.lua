@@ -119,7 +119,10 @@ vim.opt.showmode = false
 vim.opt.clipboard = 'unnamedplus'
 
 -- Enable break indent
-vim.opt.breakindent = false
+vim.opt.breakindent = true
+
+-- Wrap
+vim.opt.wrap = false
 
 -- Save undo history
 vim.opt.undofile = true
@@ -158,7 +161,10 @@ vim.opt.scrolloff = 10
 --  See `:help vim.keymap.set()`
 
 -- Set netrw key Ex
-vim.keymap.set('n', '<leader>se', vim.cmd.Ex, { desc = '[S]earch in [E]x' })
+vim.keymap.set('n', '<leader>se', vim.cmd.Ex, { desc = '[S]earch [E]x' })
+vim.g.netrw_browse_split = 0
+vim.g.netrw_banner = 0
+vim.g.netrw_winsize = 25
 
 -- Set highlight on search, but clear on pressing <Esc> in normal mode
 vim.opt.hlsearch = true
@@ -172,7 +178,7 @@ vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Show diagn
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
 
 -- Console log shortcut
-vim.keymap.set('i', 'clg', 'console.log()<Esc><S-f>(a')
+-- vim.keymap.set('i', 'clg', 'console.log()<Esc><S-f>(a')
 
 -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
 -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
@@ -499,6 +505,9 @@ require('lazy').setup {
           -- or a suggestion from your LSP for this to activate.
           map('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction')
 
+          -- Write down a JS console.log
+          map('<leader>cl', 'iconsole.log()<Esc>ha', '[C]ode [L]og (JS)')
+
           -- Opens a popup that displays documentation about the word under your cursor
           --  See `:help K` for why this keymap
           map('K', vim.lsp.buf.hover, 'Hover Documentation')
@@ -546,7 +555,7 @@ require('lazy').setup {
       local servers = {
         -- clangd = {},
         -- gopls = {},
-        -- pyright = {},
+        pyright = {},
         -- rust_analyzer = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         --
@@ -554,7 +563,7 @@ require('lazy').setup {
         --    https://github.com/pmizio/typescript-tools.nvim
         --
         -- But for many setups, the LSP (`tsserver`) will work just fine
-        -- tsserver = {},
+        tsserver = {},
         --
 
         lua_ls = {
@@ -601,7 +610,7 @@ require('lazy').setup {
         'prettier', -- Used to format JS/TS code
         'prettierd', -- Used to format JS/TS code
         'black', -- Used to format python code
-        'isort', -- Used to format python code
+        'isort', -- Used to sort python imports
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
@@ -630,9 +639,10 @@ require('lazy').setup {
       },
       formatters_by_ft = {
         lua = { 'stylua' },
-        javascript = { { 'prettierd', 'prettier' } },
-        typescript = { { 'prettierd', 'prettier' } },
-        typescriptreact = { { 'prettierd', 'prettier' } },
+        javascript = { 'prettier' },
+        typescript = { 'prettier' },
+        typescriptreact = { 'prettier' },
+        tsserver = { 'prettier' },
         python = function(bufnr)
           if require('conform').get_formatter_info('ruff_format', bufnr).available then
             return { 'ruff_format' }
@@ -696,13 +706,16 @@ require('lazy').setup {
         mapping = cmp.mapping.preset.insert {
           -- Select the [n]ext item
           ['<C-n>'] = cmp.mapping.select_next_item(),
+          ['<Tab>'] = cmp.mapping.select_next_item(),
           -- Select the [p]revious item
           ['<C-p>'] = cmp.mapping.select_prev_item(),
+          ['<S-Tab>'] = cmp.mapping.select_prev_item(),
 
           -- Accept ([y]es) the completion.
           --  This will auto-import if your LSP supports it.
           --  This will expand snippets if the LSP sent a snippet.
-          ['<C-y>'] = cmp.mapping.confirm { select = true },
+          -- ['<C-y>'] = cmp.mapping.confirm { select = true },
+          ['<CR>'] = cmp.mapping.confirm { select = true },
 
           -- Manually trigger a completion from nvim-cmp.
           --  Generally you don't need this, because nvim-cmp will display
@@ -737,23 +750,31 @@ require('lazy').setup {
     end,
   },
 
+  {
+    'catppuccin/nvim',
+    name = 'catppuccin',
+  },
+  {
+    'rose-pine/neovim',
+    name = 'rose-pine',
+  },
   { -- You can easily change to a different colorscheme.
     -- Change the name of the colorscheme plugin below, and then
     -- change the command in the config to whatever the name of that colorscheme is
     -- Some colorschemes
     -- 'catppuccin/nvim',
     -- 'folke/tokyonight.nvim',
-    'rose-pine/neovim',
+    'folke/tokyonight.nvim',
     --
     -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`
-    name = 'rose-pine',
+    name = 'tokyonight',
     lazy = false, -- make sure we load this during startup if it is your main colorscheme
     priority = 1000, -- make sure to load this before all the other start plugins
     config = function()
       -- Load the colorscheme here
       -- vim.cmd.colorscheme 'tokyonight-night'
       -- vim.cmd.colorscheme 'rose-pine'
-      vim.cmd.colorscheme 'rose-pine'
+      vim.cmd.colorscheme 'tokyonight'
 
       -- You can configure highlights by doing something like
       vim.cmd.hi 'Comment gui=none'
