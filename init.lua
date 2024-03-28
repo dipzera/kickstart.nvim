@@ -99,7 +99,7 @@ vim.g.maplocalleader = ' '
 vim.opt.background = 'dark'
 
 -- Set the thick cursor for all modes
--- vim.opt.guicursor = ''
+vim.opt.guicursor = ''
 
 -- Make line numbers default
 vim.opt.number = false
