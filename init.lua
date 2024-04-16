@@ -98,8 +98,10 @@ vim.g.maplocalleader = ' '
 -- Set dark background by default
 vim.opt.background = 'dark'
 
+vim.opt.termguicolors = true
+
 -- Set the thick cursor for all modes
-vim.opt.guicursor = ''
+-- vim.opt.guicursor = ''
 
 -- Make line numbers default
 vim.opt.number = false
@@ -156,6 +158,9 @@ vim.opt.cursorline = false
 
 -- Minimal number of screen lines to keep above and below the cursor.
 vim.opt.scrolloff = 10
+
+-- Maximum width of text that is being inserted
+vim.opt.textwidth = 0
 
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
@@ -240,6 +245,8 @@ vim.opt.rtp:prepend(lazypath)
 require('lazy').setup {
   -- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
   'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
+
+  'sgur/vim-editorconfig',
 
   -- NOTE: Plugins can also be added by using a table,
   -- with the first argument being the link and the following
@@ -556,7 +563,7 @@ require('lazy').setup {
         -- clangd = {},
         -- gopls = {},
         pyright = {},
-        rust_analyzer = {},
+        -- rust_analyzer = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         --
         -- Some languages (like typescript) have entire language plugins that can be useful:
@@ -634,22 +641,18 @@ require('lazy').setup {
     opts = {
       notify_on_error = false,
       format_on_save = {
-        timeout_ms = 500,
+        -- timeout_ms = 1000,
         lsp_fallback = true,
+        async = true,
       },
       formatters_by_ft = {
         lua = { 'stylua' },
         javascript = { 'prettier' },
         typescript = { 'prettier' },
         typescriptreact = { 'prettier' },
+        javascriptreact = { 'prettier' },
         tsserver = { 'prettier' },
-        python = function(bufnr)
-          if require('conform').get_formatter_info('ruff_format', bufnr).available then
-            return { 'ruff_format' }
-          else
-            return { 'isort', 'black' }
-          end
-        end,
+        python = { 'isort', 'black' },
       },
     },
   },
@@ -753,10 +756,22 @@ require('lazy').setup {
   {
     'catppuccin/nvim',
     name = 'catppuccin',
+    lazy = false, -- make sure we load this during startup if it is your main colorscheme
+    priority = 1000, -- make sure to load this before all the other start plugins
+    config = function()
+      vim.cmd.colorscheme 'catppuccin'
+
+      -- You can configure highlights by doing something like
+      vim.cmd.hi 'Comment gui=none'
+    end,
   },
   {
     'rose-pine/neovim',
     name = 'rose-pine',
+  },
+  {
+    'morhetz/gruvbox',
+    name = 'gruvbox',
   },
   { -- You can easily change to a different colorscheme.
     -- Change the name of the colorscheme plugin below, and then
@@ -768,17 +783,6 @@ require('lazy').setup {
     --
     -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`
     name = 'tokyonight',
-    lazy = false, -- make sure we load this during startup if it is your main colorscheme
-    priority = 1000, -- make sure to load this before all the other start plugins
-    config = function()
-      -- Load the colorscheme here
-      -- vim.cmd.colorscheme 'tokyonight-night'
-      -- vim.cmd.colorscheme 'rose-pine'
-      vim.cmd.colorscheme 'tokyonight'
-
-      -- You can configure highlights by doing something like
-      vim.cmd.hi 'Comment gui=none'
-    end,
   },
 
   -- Highlight todo, notes, etc in comments
@@ -833,7 +837,7 @@ require('lazy').setup {
         -- Autoinstall languages that are not installed
         auto_install = true,
         highlight = { enable = true },
-        indent = { enable = true },
+        indent = { enable = true, disable = { 'python' } }, -- treesitter indent works really bad with python
       }
 
       -- There are additional nvim-treesitter modules that you can use to interact
