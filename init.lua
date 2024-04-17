@@ -133,6 +133,9 @@ vim.opt.undofile = true
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
 
+vim.opt.smartindent = true
+vim.opt.autoindent = true
+
 -- Keep signcolumn on by default
 vim.opt.signcolumn = 'yes'
 
@@ -867,6 +870,17 @@ require('lazy').setup {
   --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
   --    For additional information, see `:help lazy.nvim-lazy.nvim-structuring-your-plugins`
   -- { import = 'custom.plugins' },
+  {
+    'NeogitOrg/neogit',
+    dependencies = {
+      'nvim-lua/plenary.nvim', -- requried
+      'sindrets/diffview.nvim', -- optional
+
+      'nvim-telescope/telescope.nvim',
+    },
+    config = true,
+    opts = {},
+  },
 }
 
 -- The line beneath this is called `modeline`. See `:help modeline`
