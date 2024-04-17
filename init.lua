@@ -870,17 +870,6 @@ require('lazy').setup {
   --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
   --    For additional information, see `:help lazy.nvim-lazy.nvim-structuring-your-plugins`
   -- { import = 'custom.plugins' },
-  {
-    'NeogitOrg/neogit',
-    dependencies = {
-      'nvim-lua/plenary.nvim', -- requried
-      'sindrets/diffview.nvim', -- optional
-
-      'nvim-telescope/telescope.nvim',
-    },
-    config = true,
-    opts = {},
-  },
 }
 
 -- The line beneath this is called `modeline`. See `:help modeline`
