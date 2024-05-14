@@ -589,131 +589,6 @@ require('lazy').setup({
       local capabilities = vim.lsp.protocol.make_client_capabilities()
       capabilities = vim.tbl_deep_extend('force', capabilities, require('cmp_nvim_lsp').default_capabilities())
 
-      local lsp = require 'lspconfig'
-
-      local function exepath(expr)
-        local ep = vim.fn.exepath(expr)
-        return ep ~= '' and ep or nil
-      end
-
-      local function get_python_path(workspace)
-        local path = lsp.util.path
-        -- 1. Use activated virtualenv.
-        if vim.env.VIRTUAL_ENV then
-          return path.join(vim.env.VIRTUAL_ENV, 'bin', 'python')
-        end
-
-        -- 2. Find and use virtualenv in workspace directory.
-        for _, pattern in ipairs { '*', '.*' } do
-          local match = vim.fn.glob(path.join(workspace, pattern, 'pyvenv.cfg'))
-          if vim.fn.empty(match) ~= 1 then
-            return path.join(path.dirname(match), 'bin', 'python')
-          end
-        end
-
-        -- 3. Find and use virtualenv managed by Poetry.
-        if exepath 'poetry' and path.is_file(path.join(workspace, 'poetry.lock')) then
-          local output = vim.fn.trim(vim.fn.system 'poetry env info -p')
-          if path.is_dir(output) then
-            return path.join(output, 'bin', 'python')
-          end
-        end
-
-        -- 4. Find and use virtualenv managed by Pipenv.
-        if exepath 'pipenv' and path.is_file(path.join(workspace, 'Pipfile')) then
-          local output = vim.fn.trim(vim.fn.system('cd ' .. workspace .. '; pipenv --py'))
-          if path.is_dir(output) then
-            return output
-          end
-        end
-
-        -- 5. Fallback to system Python.
-
-        return exepath 'python3' or exepath 'python' or 'python'
-      end
-
-      -- vim.tbl_deep_extend('keep', lsp, {
-      --   delance = {
-      --     name = 'delance',
-      --     before_init = function(_, config)
-      --       if not config.settings.python then
-      --         config.settings.python = {}
-      --       end
-      --       if not config.settings.python.pythonPath then
-      --         config.settings.python.pythonPath = get_python_path(config.root_dir)
-      --       end
-      --     end,
-      --     cmd = {
-      --       'npx',
-      --       '@delance/runtime',
-      --       'delance-langserver',
-      --       '--stdio',
-      --     },
-      --     filetypes = { 'python' },
-      --     single_file_support = true,
-      --     root_dir = function(fname)
-      --       return lsp.util.root_pattern(unpack {
-      --         'pyproject.toml',
-      --         'setup.py',
-      --         'setup.cfg',
-      --         'requirements.txt',
-      --         'Pipfile',
-      --         'pyrightconfig.json',
-      --         '.git',
-      --       })(fname)
-      --     end,
-      --     settings = {
-      --       python = {
-      --         analysis = {
-      --           inlayHints = {
-      --             variableTypes = true,
-      --             functionReturnTypes = true,
-      --
-      --             callArgumentNames = true,
-      --             pytestParameters = true,
-      --           },
-      --         },
-      --       },
-      --     },
-      --   },
-      -- })
-
-      -- vim.lsp.start {
-      --   before_init = function(_, config)
-      --     if not config.settings.python then
-      --       config.settings.python = {}
-      --     end
-      --     if not config.settings.python.pythonPath then
-      --       config.settings.python.pythonPath = get_python_path(config.root_dir)
-      --     end
-      --   end,
-      --   cmd = { 'npx', '@delance/runtime', 'delance-langserver', '--stdio' },
-      --   filetypes = { 'python' },
-      --   name = 'delance',
-      --   -- root_dir = function(fname)
-      --   --   return lsp.util.root_pattern(unpack { 'pyproject.toml', 'setup.py', 'setup.cfg', 'requirements.txt', 'Pipfile', 'pyrightconfig.json', '.git' })(fname)
-      --   -- end,
-      --   single_file_support = true,
-      --   settings = {
-      --     python = {
-      --       pythonPath = '/usr/bin/python3',
-      --       analysis = {
-      --         inlayHints = {
-      --           variableTypes = true,
-      --           functionReturnTypes = true,
-      --
-      --           callArgumentNames = true,
-      --           pytestParameters = true,
-      --
-      --           autoSearchPaths = true,
-      --           useLibraryCodeForTypes = true,
-      --           diagnosticMode = 'openFilesOnly',
-      --         },
-      --       },
-      --     },
-      --   },
-      -- }
-
       -- Enable the following language servers
       --  Feel free to add/remove any LSPs that you want here. They will automatically be installed.
       --
@@ -774,8 +649,6 @@ require('lazy').setup({
       local ensure_installed = vim.tbl_keys(servers or {})
 
       vim.list_extend(ensure_installed, {
-        'tsserver',
-        'lua_ls',
         'stylua', -- Used to format lua code
         'prettier', -- Used to format JS/TS code
         'prettierd', -- Used to format JS/TS code
@@ -966,17 +839,6 @@ require('lazy').setup({
       -- You can configure highlights by doing something like:
       vim.cmd.hi 'Comment gui=none'
     end,
-  },
-  { -- You can easily change to a different colorscheme.
-    -- Change the name of the colorscheme plugin below, and then
-    -- change the command in the config to whatever the name of that colorscheme is
-    -- Some colorschemes
-    -- 'catppuccin/nvim',
-    -- 'folke/tokyonight.nvim',
-    'folke/tokyonight.nvim',
-    --
-    -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`
-    name = 'tokyonight',
   },
 
   -- Highlight todo, notes, etc in comments
