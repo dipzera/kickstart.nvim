@@ -760,8 +760,6 @@ require('lazy').setup({
         },
       }
 
-      -- lsp.pylance.setup(servers.pylance)
-
       -- Ensure the servers and tools above are installed
       --  To check the current status of installed tools and/or manually install
       --  other tools, you can run
@@ -770,15 +768,12 @@ require('lazy').setup({
       --  You can press `g?` for help in this menu.
       require('mason').setup()
 
-      -- servers.pylance = nil
-
       -- You can add other tools here that you want Mason to install
       -- for you, so that they are available from within Neovim.
 
-      -- local ensure_installed = vim.tbl_keys(servers or {})
+      local ensure_installed = vim.tbl_keys(servers or {})
 
-      local mason_ensure_installed = {}
-      vim.list_extend(mason_ensure_installed, {
+      vim.list_extend(ensure_installed, {
         'tsserver',
         'lua_ls',
         'stylua', -- Used to format lua code
@@ -787,7 +782,7 @@ require('lazy').setup({
         'black', -- Used to format python code
         'isort', -- Used to sort python imports
       })
-      require('mason-tool-installer').setup { ensure_installed = mason_ensure_installed }
+      require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
       require('mason-lspconfig').setup {
         handlers = {
