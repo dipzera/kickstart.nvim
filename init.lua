@@ -104,10 +104,10 @@ vim.opt.termguicolors = true
 -- vim.opt.guicursor = ''
 
 -- Make line numbers default
-vim.opt.number = false
+vim.opt.number = true
 -- You can also add relative line numbers, for help with jumping.
 --  Experiment for yourself to see if you like it!
--- vim.opt.relativenumber = true
+vim.opt.relativenumber = true
 
 -- Enable mouse mode, can be useful for resizing splits for example!
 vim.opt.mouse = 'a'
@@ -164,6 +164,8 @@ vim.opt.scrolloff = 10
 
 -- Maximum width of text that is being inserted
 vim.opt.textwidth = 0
+vim.g.textwidth = 0
+vim.opt.colorcolumn = '88'
 
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
@@ -553,6 +555,131 @@ require('lazy').setup {
       local capabilities = vim.lsp.protocol.make_client_capabilities()
       capabilities = vim.tbl_deep_extend('force', capabilities, require('cmp_nvim_lsp').default_capabilities())
 
+      local lsp = require 'lspconfig'
+
+      local function exepath(expr)
+        local ep = vim.fn.exepath(expr)
+        return ep ~= '' and ep or nil
+      end
+
+      local function get_python_path(workspace)
+        local path = lsp.util.path
+        -- 1. Use activated virtualenv.
+        if vim.env.VIRTUAL_ENV then
+          return path.join(vim.env.VIRTUAL_ENV, 'bin', 'python')
+        end
+
+        -- 2. Find and use virtualenv in workspace directory.
+        for _, pattern in ipairs { '*', '.*' } do
+          local match = vim.fn.glob(path.join(workspace, pattern, 'pyvenv.cfg'))
+          if vim.fn.empty(match) ~= 1 then
+            return path.join(path.dirname(match), 'bin', 'python')
+          end
+        end
+
+        -- 3. Find and use virtualenv managed by Poetry.
+        if exepath 'poetry' and path.is_file(path.join(workspace, 'poetry.lock')) then
+          local output = vim.fn.trim(vim.fn.system 'poetry env info -p')
+          if path.is_dir(output) then
+            return path.join(output, 'bin', 'python')
+          end
+        end
+
+        -- 4. Find and use virtualenv managed by Pipenv.
+        if exepath 'pipenv' and path.is_file(path.join(workspace, 'Pipfile')) then
+          local output = vim.fn.trim(vim.fn.system('cd ' .. workspace .. '; pipenv --py'))
+          if path.is_dir(output) then
+            return output
+          end
+        end
+
+        -- 5. Fallback to system Python.
+
+        return exepath 'python3' or exepath 'python' or 'python'
+      end
+
+      -- vim.tbl_deep_extend('keep', lsp, {
+      --   delance = {
+      --     name = 'delance',
+      --     before_init = function(_, config)
+      --       if not config.settings.python then
+      --         config.settings.python = {}
+      --       end
+      --       if not config.settings.python.pythonPath then
+      --         config.settings.python.pythonPath = get_python_path(config.root_dir)
+      --       end
+      --     end,
+      --     cmd = {
+      --       'npx',
+      --       '@delance/runtime',
+      --       'delance-langserver',
+      --       '--stdio',
+      --     },
+      --     filetypes = { 'python' },
+      --     single_file_support = true,
+      --     root_dir = function(fname)
+      --       return lsp.util.root_pattern(unpack {
+      --         'pyproject.toml',
+      --         'setup.py',
+      --         'setup.cfg',
+      --         'requirements.txt',
+      --         'Pipfile',
+      --         'pyrightconfig.json',
+      --         '.git',
+      --       })(fname)
+      --     end,
+      --     settings = {
+      --       python = {
+      --         analysis = {
+      --           inlayHints = {
+      --             variableTypes = true,
+      --             functionReturnTypes = true,
+      --
+      --             callArgumentNames = true,
+      --             pytestParameters = true,
+      --           },
+      --         },
+      --       },
+      --     },
+      --   },
+      -- })
+
+      -- vim.lsp.start {
+      --   before_init = function(_, config)
+      --     if not config.settings.python then
+      --       config.settings.python = {}
+      --     end
+      --     if not config.settings.python.pythonPath then
+      --       config.settings.python.pythonPath = get_python_path(config.root_dir)
+      --     end
+      --   end,
+      --   cmd = { 'npx', '@delance/runtime', 'delance-langserver', '--stdio' },
+      --   filetypes = { 'python' },
+      --   name = 'delance',
+      --   -- root_dir = function(fname)
+      --   --   return lsp.util.root_pattern(unpack { 'pyproject.toml', 'setup.py', 'setup.cfg', 'requirements.txt', 'Pipfile', 'pyrightconfig.json', '.git' })(fname)
+      --   -- end,
+      --   single_file_support = true,
+      --   settings = {
+      --     python = {
+      --       pythonPath = '/usr/bin/python3',
+      --       analysis = {
+      --         inlayHints = {
+      --           variableTypes = true,
+      --           functionReturnTypes = true,
+      --
+      --           callArgumentNames = true,
+      --           pytestParameters = true,
+      --
+      --           autoSearchPaths = true,
+      --           useLibraryCodeForTypes = true,
+      --           diagnosticMode = 'openFilesOnly',
+      --         },
+      --       },
+      --     },
+      --   },
+      -- }
+
       -- Enable the following language servers
       --  Feel free to add/remove any LSPs that you want here. They will automatically be installed.
       --
@@ -565,7 +692,14 @@ require('lazy').setup {
       local servers = {
         -- clangd = {},
         -- gopls = {},
-        pyright = {},
+        basedpyright = {
+          settings = {
+            basedpyright = {
+              typeCheckingMode = 'off',
+            },
+          },
+        },
+        -- pyright = {},
         -- rust_analyzer = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         --
@@ -604,6 +738,8 @@ require('lazy').setup {
         },
       }
 
+      -- lsp.pylance.setup(servers.pylance)
+
       -- Ensure the servers and tools above are installed
       --  To check the current status of installed tools and/or manually install
       --  other tools, you can run
@@ -612,17 +748,24 @@ require('lazy').setup {
       --  You can press `g?` for help in this menu
       require('mason').setup()
 
+      -- servers.pylance = nil
+
       -- You can add other tools here that you want Mason to install
       -- for you, so that they are available from within Neovim.
-      local ensure_installed = vim.tbl_keys(servers or {})
-      vim.list_extend(ensure_installed, {
+
+      -- local ensure_installed = vim.tbl_keys(servers or {})
+
+      local mason_ensure_installed = {}
+      vim.list_extend(mason_ensure_installed, {
+        'tsserver',
+        'lua_ls',
         'stylua', -- Used to format lua code
         'prettier', -- Used to format JS/TS code
         'prettierd', -- Used to format JS/TS code
         'black', -- Used to format python code
         'isort', -- Used to sort python imports
       })
-      require('mason-tool-installer').setup { ensure_installed = ensure_installed }
+      require('mason-tool-installer').setup { ensure_installed = mason_ensure_installed }
 
       require('mason-lspconfig').setup {
         handlers = {
@@ -655,7 +798,7 @@ require('lazy').setup {
         typescriptreact = { 'prettier' },
         javascriptreact = { 'prettier' },
         tsserver = { 'prettier' },
-        python = { 'isort', 'black' },
+        -- python = { 'black', 'isort' },
       },
     },
   },
@@ -759,14 +902,6 @@ require('lazy').setup {
   {
     'catppuccin/nvim',
     name = 'catppuccin',
-    lazy = false, -- make sure we load this during startup if it is your main colorscheme
-    priority = 1000, -- make sure to load this before all the other start plugins
-    config = function()
-      vim.cmd.colorscheme 'catppuccin'
-
-      -- You can configure highlights by doing something like
-      vim.cmd.hi 'Comment gui=none'
-    end,
   },
   {
     'rose-pine/neovim',
@@ -775,6 +910,18 @@ require('lazy').setup {
   {
     'morhetz/gruvbox',
     name = 'gruvbox',
+  },
+  {
+    'tanvirtin/nvim-monokai',
+    name = 'monokai',
+    lazy = false, -- make sure we load this during startup if it is your main colorscheme
+    priority = 1000, -- make sure to load this before all the other start plugins
+    config = function()
+      vim.cmd.colorscheme 'monokai'
+
+      -- You can configure highlights by doing something like
+      vim.cmd.hi 'Comment gui=none'
+    end,
   },
   { -- You can easily change to a different colorscheme.
     -- Change the name of the colorscheme plugin below, and then
@@ -862,14 +1009,20 @@ require('lazy').setup {
   --  Uncomment any of the lines below to enable them (you will need to restart nvim).
   --
   require 'kickstart.plugins.debug',
-  -- require 'kickstart.plugins.indent_line',
+  require 'kickstart.plugins.indent_line',
 
+  require 'kickstart.plugins.colorschemes',
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    This is the easiest way to modularize your config.
   --
   --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
   --    For additional information, see `:help lazy.nvim-lazy.nvim-structuring-your-plugins`
   -- { import = 'custom.plugins' },
+  --
+  {
+    'tpope/vim-fugitive',
+    config = function() end,
+  },
 }
 
 -- The line beneath this is called `modeline`. See `:help modeline`
