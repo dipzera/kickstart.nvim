@@ -662,6 +662,7 @@ require('lazy').setup({
         'prettierd', -- Used to format JS/TS code
         'black', -- Used to format python code
         'isort', -- Used to sort python imports
+        'tailwindcss-language-server' -- Tailwind LSP
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
@@ -682,26 +683,34 @@ require('lazy').setup({
 
   -- Install Apple's pkl LSP
   {
-    "https://github.com/apple/pkl-neovim",
+    'https://github.com/apple/pkl-neovim',
     lazy = true,
     event = {
-      "BufReadPre *.pkl",
-      "BufReadPre *.pcf",
-      "BufReadPre PklProject"
+      'BufReadPre *.pkl',
+      'BufReadPre *.pcf',
+      'BufReadPre PklProject',
     },
     dependencies = {
-      "nvim-treesitter/nvim-treesitter",
+      'nvim-treesitter/nvim-treesitter',
     },
-    build = function ()
-      vim.cmd("TSInstall! pkl")
-    end
+    build = function()
+      vim.cmd 'TSInstall! pkl'
+    end,
   },
 
   -- Tailwind LSP
   {
-    "luckasRanarison/tailwind-tools.nvim",
-    dependencies = { "nvim-treesitter/nvim-treesitter" },
-    opts = {},
+    'luckasRanarison/tailwind-tools.nvim',
+    dependencies = { 'nvim-treesitter/nvim-treesitter' },
+    opts = {
+      document_color = {
+        enabled = false, -- can be toggled by commands
+      },
+      conceal = {
+        enabled = false, -- can be toggled by commands
+      },
+      custom_filetypes = {},
+    },
   },
 
   { -- Autoformat
@@ -914,7 +923,7 @@ require('lazy').setup({
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
     opts = {
-      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'vim', 'vimdoc' },
+      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'vim', 'vimdoc', 'html', 'css', 'tsx' },
       -- Autoinstall languages that are not installed
       auto_install = true,
       highlight = {
