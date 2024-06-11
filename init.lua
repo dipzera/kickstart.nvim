@@ -605,7 +605,10 @@ require('lazy').setup({
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
       local servers = {
         -- clangd = {},
-        gopls = {},
+        gopls = {
+          usePlaceholders = true,
+          gofumpt = true,
+        },
         basedpyright = {
           settings = {
             basedpyright = {
@@ -675,6 +678,30 @@ require('lazy').setup({
         },
       }
     end,
+  },
+
+  -- Install Apple's pkl LSP
+  {
+    "https://github.com/apple/pkl-neovim",
+    lazy = true,
+    event = {
+      "BufReadPre *.pkl",
+      "BufReadPre *.pcf",
+      "BufReadPre PklProject"
+    },
+    dependencies = {
+      "nvim-treesitter/nvim-treesitter",
+    },
+    build = function ()
+      vim.cmd("TSInstall! pkl")
+    end
+  },
+
+  -- Tailwind LSP
+  {
+    "luckasRanarison/tailwind-tools.nvim",
+    dependencies = { "nvim-treesitter/nvim-treesitter" },
+    opts = {},
   },
 
   { -- Autoformat
@@ -869,7 +896,7 @@ require('lazy').setup({
       --  and try some other statusline plugin
       local statusline = require 'mini.statusline'
       -- set use_icons to true if you have a Nerd Font
-      -- statusline.setup { use_icons = vim.g.have_nerd_font }
+      statusline.setup { use_icons = vim.g.have_nerd_font }
 
       -- You can configure sections in the statusline by overriding their
       -- default behavior. For example, here we set the section for
@@ -950,7 +977,7 @@ require('lazy').setup({
   --  Uncomment any of the lines below to enable them (you will need to restart nvim).
   --
   -- require 'kickstart.plugins.debug',
-  require 'kickstart.plugins.indent_line',
+  -- require 'kickstart.plugins.indent_line',
   -- require 'kickstart.plugins.lint',
   require 'kickstart.plugins.autopairs',
   -- require 'kickstart.plugins.neo-tree',
