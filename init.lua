@@ -662,7 +662,7 @@ require('lazy').setup({
         'prettierd', -- Used to format JS/TS code
         'black', -- Used to format python code
         'isort', -- Used to sort python imports
-        'tailwindcss-language-server' -- Tailwind LSP
+        'tailwindcss-language-server', -- Tailwind LSP
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
@@ -905,7 +905,7 @@ require('lazy').setup({
       --  and try some other statusline plugin
       local statusline = require 'mini.statusline'
       -- set use_icons to true if you have a Nerd Font
-      statusline.setup { use_icons = vim.g.have_nerd_font }
+      -- statusline.setup { use_icons = vim.g.have_nerd_font } -- disable statusline
 
       -- You can configure sections in the statusline by overriding their
       -- default behavior. For example, here we set the section for
@@ -961,10 +961,10 @@ require('lazy').setup({
     'akinsho/toggleterm.nvim',
     config = function()
       require('toggleterm').setup {
-        size = 10,
-        open_mapping = [[<F7>]],
+        size = 15,
+        -- open_mapping = [[<F7>]],
         shading_factor = 2,
-        direction = 'float',
+        -- direction = '',
 
         float_opts = {
           border = 'curved',
@@ -974,6 +974,8 @@ require('lazy').setup({
           },
         },
       }
+
+      vim.keymap.set('n', '<leader>tt', vim.cmd.ToggleTerm, { desc = '[T]oggle [T]erminal' })
     end,
   },
   -- The following two comments only work if you have downloaded the kickstart repo, not just copy pasted the
