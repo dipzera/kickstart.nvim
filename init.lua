@@ -104,7 +104,7 @@ vim.opt.background = 'dark'
 vim.opt.termguicolors = true
 
 -- Set the thick cursor for all modes
--- vim.opt.guicursor = ''
+vim.opt.guicursor = ''
 
 -- Make line numbers default
 vim.opt.number = true
@@ -202,7 +202,7 @@ vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagn
 --
 -- NOTE: This won't work in all terminal emulators/tmux/etc. Try your own mapping
 -- or just use <C-\><C-n> to exit terminal mode
-vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
+vim.keymap.set('t', '<C-k>', '<C-\\><C-n><C-k>', { desc = 'Exit terminal mode' })
 
 -- TIP: Disable arrow keys in normal mode
 -- vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
@@ -663,6 +663,7 @@ require('lazy').setup({
         'black', -- Used to format python code
         'isort', -- Used to sort python imports
         'tailwindcss-language-server', -- Tailwind LSP
+        'buf' -- protobuf,
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
@@ -905,7 +906,7 @@ require('lazy').setup({
       --  and try some other statusline plugin
       local statusline = require 'mini.statusline'
       -- set use_icons to true if you have a Nerd Font
-      -- statusline.setup { use_icons = vim.g.have_nerd_font } -- disable statusline
+      statusline.setup { use_icons = vim.g.have_nerd_font } -- disable statusline
 
       -- You can configure sections in the statusline by overriding their
       -- default behavior. For example, here we set the section for
