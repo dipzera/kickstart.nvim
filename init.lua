@@ -663,7 +663,7 @@ require('lazy').setup({
         'black', -- Used to format python code
         'isort', -- Used to sort python imports
         'tailwindcss-language-server', -- Tailwind LSP
-        'buf' -- protobuf,
+        'buf', -- protobuf,
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
@@ -874,11 +874,35 @@ require('lazy').setup({
     priority = 1000, -- Make sure to load this before all the other start plugins.
     init = function()
       -- Load the colorscheme here.
-      vim.cmd.colorscheme 'kanagawa-dragon'
+      vim.cmd.colorscheme 'kanagawa'
 
       -- You can configure highlights by doing something like:
-      -- vim.cmd.hi 'Comment gui=none'
+      vim.cmd.hi 'Comment gui=none'
     end,
+    opts = {
+      keywordStyle = { italic = false },
+      commentStyle = { italic = false },
+    }
+  },
+  {
+    'folke/tokyonight.nvim',
+    priority = 1000,
+    opts = {
+      styles = {
+        comments = { italic = false },
+        keywords = { italic = false },
+      }
+    },
+  },
+  {
+    "rose-pine/neovim",
+    name = "rose-pine",
+    priority = 1000,
+    opts = {
+      styles = {
+        italic = false,
+      }
+    }
   },
   -- Highlight todo, notes, etc in comments
   { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
@@ -906,7 +930,7 @@ require('lazy').setup({
       --  and try some other statusline plugin
       local statusline = require 'mini.statusline'
       -- set use_icons to true if you have a Nerd Font
-      statusline.setup { use_icons = vim.g.have_nerd_font } -- disable statusline
+      -- statusline.setup { use_icons = vim.g.have_nerd_font } -- disable statusline
 
       -- You can configure sections in the statusline by overriding their
       -- default behavior. For example, here we set the section for
@@ -924,7 +948,7 @@ require('lazy').setup({
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
     opts = {
-      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'vim', 'vimdoc', 'html', 'css', 'tsx' },
+      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'vim', 'vimdoc', 'html', 'css', 'tsx', 'tree-sitter-proto' },
       -- Autoinstall languages that are not installed
       auto_install = true,
       highlight = {
