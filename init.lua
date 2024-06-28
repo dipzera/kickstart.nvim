@@ -83,9 +83,9 @@ vim.opt.cursorline = false
 vim.opt.scrolloff = 10
 
 -- Maximum width of text that is being inserted
-vim.opt.textwidth = 0
-vim.g.textwidth = 0
-vim.opt.colorcolumn = '88'
+-- vim.opt.textwidth = 0
+-- vim.g.textwidth = 0
+-- vim.opt.colorcolumn = '88'
 
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
