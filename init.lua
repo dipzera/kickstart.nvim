@@ -104,7 +104,7 @@ vim.opt.background = 'dark'
 vim.opt.termguicolors = true
 
 -- Set the thick cursor for all modes
-vim.opt.guicursor = ''
+-- vim.opt.guicursor = ''
 
 -- Make line numbers default
 vim.opt.number = true
@@ -186,6 +186,7 @@ vim.g.netrw_winsize = 25
 vim.opt.hlsearch = true
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 vim.keymap.set('n', '<C-c>', '<cmd>nohlsearch<CR>')
+vim.keymap.set('i', '<C-c>', '<Esc>')
 
 -- Diagnostic keymaps
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous [D]iagnostic message' })
@@ -202,7 +203,7 @@ vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagn
 --
 -- NOTE: This won't work in all terminal emulators/tmux/etc. Try your own mapping
 -- or just use <C-\><C-n> to exit terminal mode
-vim.keymap.set('t', '<C-k>', '<C-\\><C-n><C-k>', { desc = 'Exit terminal mode' })
+-- vim.keymap.set('t', '<C-k>', '<C-\\><C-n><C-k>', { desc = 'Exit terminal mode' })
 
 -- TIP: Disable arrow keys in normal mode
 -- vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
@@ -238,7 +239,7 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
 if not vim.loop.fs_stat(lazypath) then
   local lazyrepo = 'https://github.com/folke/lazy.nvim.git'
-  vim.fn.system { 'git', 'clone', '--filter=blob:none', '--branch=stable', lazyrepo, lazypath }
+  -- vim.fn.system { 'git', 'clone', '--filter=blob:none', '--branch=stable', lazyrepo, lazypath }
 end ---@diagnostic disable-next-line: undefined-field
 vim.opt.rtp:prepend(lazypath)
 
@@ -872,6 +873,10 @@ require('lazy').setup({
     -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
     'rebelot/kanagawa.nvim',
     priority = 1000, -- Make sure to load this before all the other start plugins.
+    opts = {
+      keywordStyle = { italic = false },
+      commentStyle = { italic = false },
+    },
     init = function()
       -- Load the colorscheme here.
       vim.cmd.colorscheme 'kanagawa'
@@ -879,10 +884,6 @@ require('lazy').setup({
       -- You can configure highlights by doing something like:
       vim.cmd.hi 'Comment gui=none'
     end,
-    opts = {
-      keywordStyle = { italic = false },
-      commentStyle = { italic = false },
-    }
   },
   {
     'folke/tokyonight.nvim',
@@ -891,18 +892,18 @@ require('lazy').setup({
       styles = {
         comments = { italic = false },
         keywords = { italic = false },
-      }
+      },
     },
   },
   {
-    "rose-pine/neovim",
-    name = "rose-pine",
+    'rose-pine/neovim',
+    name = 'rose-pine',
     priority = 1000,
     opts = {
       styles = {
         italic = false,
-      }
-    }
+      },
+    },
   },
   -- Highlight todo, notes, etc in comments
   { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
@@ -983,25 +984,8 @@ require('lazy').setup({
     end,
   },
   {
-    'akinsho/toggleterm.nvim',
-    config = function()
-      require('toggleterm').setup {
-        size = 15,
-        -- open_mapping = [[<F7>]],
-        shading_factor = 2,
-        -- direction = '',
-
-        float_opts = {
-          border = 'curved',
-          highlights = {
-            border = 'Normal',
-            background = 'Normal',
-          },
-        },
-      }
-
-      vim.keymap.set('n', '<leader>tt', vim.cmd.ToggleTerm, { desc = '[T]oggle [T]erminal' })
-    end,
+    'christoomey/vim-tmux-navigator',
+    config = function() end,
   },
   -- The following two comments only work if you have downloaded the kickstart repo, not just copy pasted the
   -- init.lua. If you want these files, they are in the repository, so you can just download them and
