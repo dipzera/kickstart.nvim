@@ -86,7 +86,7 @@ vim.opt.scrolloff = 10
 --  See `:help vim.keymap.set()`
 
 -- Clear highlights on search when pressing <Esc> OR <C-c> in normal mode
---  See `:help :hlsearch`
+--  See `:help hlsearch`
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
 -- Diagnostic keymaps
