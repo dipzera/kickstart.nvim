@@ -860,34 +860,6 @@ require('lazy').setup {
       vim.cmd.hi 'Comment gui=none'
     end,
   },
-  {
-    'folke/tokyonight.nvim',
-    priority = 1000,
-    lazy = false,
-    opts = {},
-  },
-  {
-    'rose-pine/neovim',
-    name = 'rose-pine',
-  },
-  {
-    'catppuccin/nvim',
-    name = 'catppuccin',
-    priority = 1000,
-  },
-  {
-    'jacoborus/tender.vim',
-    config = function() end,
-  },
-  {
-    'habamax/vim-habamax',
-    name = 'habamax',
-    config = function() end,
-  },
-  {
-    'sainnhe/gruvbox-material',
-    name = 'gruvbox-material',
-  },
   -- Highlight todo, notes, etc in comments
   { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
 
@@ -940,6 +912,7 @@ require('lazy').setup {
         'lua',
         'luadoc',
         'markdown',
+        'markdown-inline',
         'vim',
         'vimdoc',
         'html',
@@ -987,6 +960,36 @@ require('lazy').setup {
   -- require 'kickstart.plugins.autopairs',
   -- require 'kickstart.plugins.neo-tree',
   -- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
+
+  -- Themes
+  {
+    'folke/tokyonight.nvim',
+    priority = 1000,
+    lazy = false,
+    opts = {},
+  },
+  {
+    'rose-pine/neovim',
+    name = 'rose-pine',
+  },
+  {
+    'catppuccin/nvim',
+    name = 'catppuccin',
+    priority = 1000,
+  },
+  {
+    'jacoborus/tender.vim',
+    config = function() end,
+  },
+  {
+    'habamax/vim-habamax',
+    name = 'habamax',
+    config = function() end,
+  },
+  {
+    'sainnhe/gruvbox-material',
+    name = 'gruvbox-material',
+  },
 
   -- Custom plugins
 
