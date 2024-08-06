@@ -944,7 +944,6 @@ require('lazy').setup {
         'html',
         'css',
         'tsx',
-        'tree-sitter-proto',
       },
       -- Autoinstall languages that are not installed
       auto_install = true,
