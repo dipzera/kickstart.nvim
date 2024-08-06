@@ -97,7 +97,20 @@ vim.g.have_nerd_font = false
 -- See `:help vim.opt`
 -- NOTE: You can change these options as you wish!
 --  For more options, you can see `:help option-list`
+--
+vim.o.laststatus = 3
+vim.o.cursorlineopt = 'number'
 
+-- Set dark background by default
+vim.opt.background = 'dark'
+
+vim.opt.termguicolors = true
+
+-- write a for loop
+
+-- Set the thick cursor for all modes
+-- vim.opt.guicursor = ''
+--
 -- Make line numbers default
 vim.opt.number = true
 -- You can also add relative line numbers, to help with jumping.
@@ -146,7 +159,8 @@ vim.opt.splitbelow = true
 --  See `:help 'list'`
 --  and `:help 'listchars'`
 vim.opt.list = true
-vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
+-- vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
+vim.opt.listchars = { tab = '  ', trail = '·', nbsp = '␣' }
 
 -- Preview substitutions live, as you type!
 vim.opt.inccommand = 'split'
@@ -227,9 +241,10 @@ vim.opt.rtp:prepend(lazypath)
 --    :Lazy update
 --
 -- NOTE: Here is where you install your plugins.
-require('lazy').setup({
+require('lazy').setup {
   -- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
-  'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
+  -- Detect tabstop and shiftwidth automatically
+  { 'tpope/vim-sleuth', config = function() end },
 
   -- NOTE: Plugins can also be added by using a table,
   -- with the first argument being the link and the following
@@ -240,20 +255,36 @@ require('lazy').setup({
 
   -- Here is a more advanced example where we pass configuration
   -- options to `gitsigns.nvim`. This is equivalent to the following Lua:
-  --    require('gitsigns').setup({ ... })
+  -- require('gitsigns').setup{ ... }
+  --
   --
   -- See `:help gitsigns` to understand what the configuration keys do
   { -- Adds git related signs to the gutter, as well as utilities for managing changes
     'lewis6991/gitsigns.nvim',
-    opts = {
-      signs = {
-        add = { text = '+' },
-        change = { text = '~' },
-        delete = { text = '_' },
-        topdelete = { text = '‾' },
-        changedelete = { text = '~' },
-      },
-    },
+    config = function()
+      require('gitsigns').setup {
+        signs = {
+          add = { text = '+' },
+          change = { text = '~' },
+          delete = { text = '_' },
+          topdelete = { text = '‾' },
+          changedelete = { text = '~' },
+        },
+        signs_staged = {
+          add = { text = '+' },
+          change = { text = '~' },
+          delete = { text = '_' },
+          topdelete = { text = '‾' },
+          changedelete = { text = '~' },
+        },
+        on_attach = function()
+          local gitsigns = require 'gitsigns'
+          vim.keymap.set('n', '<leader>b', function()
+            gitsigns.blame_line { full = true }
+          end, { desc = '[B]lame line' })
+        end,
+      }
+    end,
   },
 
   -- NOTE: Plugins can also be configured to run Lua code when they are loaded.
@@ -278,14 +309,15 @@ require('lazy').setup({
       require('which-key').setup()
 
       -- Document existing key chains
-      require('which-key').add {
-        { '<leader>c', group = '[C]ode' },
-        { '<leader>d', group = '[D]ocument' },
-        { '<leader>r', group = '[R]ename' },
-        { '<leader>s', group = '[S]earch' },
-        { '<leader>w', group = '[W]orkspace' },
-        { '<leader>t', group = '[T]oggle' },
-        { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
+      require('which-key').register {
+        ['<leader>c'] = { name = '[C]ode', _ = 'which_key_ignore' },
+        ['<leader>d'] = { name = '[D]ocument', _ = 'which_key_ignore' },
+        ['<leader>r'] = { name = '[R]ename', _ = 'which_key_ignore' },
+        ['<leader>s'] = { name = '[S]earch', _ = 'which_key_ignore' },
+        ['<leader>w'] = { name = '[W]orkspace', _ = 'which_key_ignore' },
+        ['<leader>t'] = { name = '[T]oggle', _ = 'which_key_ignore' },
+        ['<leader>h'] = { name = 'Git [H]unk', _ = 'which_key_ignore' },
+        ['<leader>l'] = { name = '[L]arge Language Model', _ = 'which_key_ignore' },
       }
     end,
   },
@@ -494,6 +526,7 @@ require('lazy').setup({
           -- Fuzzy find all the symbols in your current document.
           --  Symbols are things like variables, functions, types, etc.
           map('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
+          map('<leader>dw', '<cmd>:w<CR>', '[D]ocument [W]write')
 
           -- Fuzzy find all the symbols in your current workspace.
           --  Similar to document symbols, except searches over your entire project.
@@ -507,10 +540,17 @@ require('lazy').setup({
           -- or a suggestion from your LSP for this to activate.
           map('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction')
 
-          -- WARN: This is not Goto Definition, this is Goto Declaration.
-          --  For example, in C this would take you to the header.
-          map('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
+          -- Write down a JS console.log down below
+          map('<leader>cl', 'oconsole.log()<Esc>ha', '[C]ode [L]og (JS)')
 
+          -- Opens a popup that displays documentation about the word under your cursor
+          --  See `:help K` for why this keymap.
+          map('K', vim.lsp.buf.hover, 'Hover Documentation')
+          map('<leader>lc', '<cmd>ChatGPT<CR>', 'LLM [C]hat')
+          map('<leader>le', '<cmd>ChatGPTEditWithInstruction<CR>', 'LLM [E]dit')
+          map('<leader>lr', '<cmd>ChatGPTRun<CR>', 'LLM [R]un')
+
+          map('<leader>cc', '<cmd>CodyChat<CR>', '[C]ody [C]hat')
           -- The following two autocommands are used to highlight references of the
           -- word under your cursor when your cursor rests there for a little while.
           --    See `:help CursorHold` for information about when this is executed
@@ -610,7 +650,17 @@ require('lazy').setup({
       -- for you, so that they are available from within Neovim.
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
-        'stylua', -- Used to format Lua code
+        'stylua', -- Used to format lua code
+        'prettier', -- Used to format JS/TS code
+        'prettierd', -- Used to format JS/TS code
+        'black', -- Used to format python code
+        'isort', -- Used to sort python imports
+        'tailwindcss-language-server', -- Tailwind LSP
+        'buf', -- protobuf,
+        'html-lsp',
+        'css-lsp',
+        'sqls',
+        'sqlfluff',
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
@@ -657,11 +707,13 @@ require('lazy').setup({
       end,
       formatters_by_ft = {
         lua = { 'stylua' },
-        -- Conform can also run multiple formatters sequentially
-        -- python = { "isort", "black" },
-        --
-        -- You can use 'stop_after_first' to run the first available formatter from the list
-        -- javascript = { "prettierd", "prettier", stop_after_first = true },
+        javascript = { 'prettier' },
+        typescript = { 'prettier' },
+        typescriptreact = { 'prettier' },
+        javascriptreact = { 'prettier' },
+        tsserver = { 'prettier' },
+        python = { 'black', 'isort' },
+        sql = { 'sqlfluff' },
       },
     },
   },
@@ -709,6 +761,7 @@ require('lazy').setup({
       luasnip.config.setup {}
 
       cmp.setup {
+        preselect = cmp.PreselectMode.None,
         snippet = {
           expand = function(args)
             luasnip.lsp_expand(args.body)
@@ -777,8 +830,17 @@ require('lazy').setup({
           { name = 'nvim_lsp' },
           { name = 'luasnip' },
           { name = 'path' },
+          { name = 'cody' },
         },
       }
+
+      -- SQL specific auto completion
+      cmp.setup.filetype({ 'sql' }, {
+        sources = {
+          { name = 'vim-dadbod-completion' },
+          { name = 'buffer' },
+        },
+      })
     end,
   },
 
@@ -791,15 +853,40 @@ require('lazy').setup({
     priority = 1000, -- Make sure to load this before all the other start plugins.
     init = function()
       -- Load the colorscheme here.
-      -- Like many other themes, this one has different styles, and you could load
-      -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      vim.cmd.colorscheme 'tokyonight-night'
+      vim.cmd.colorscheme 'gruvbox-material'
 
       -- You can configure highlights by doing something like:
       vim.cmd.hi 'Comment gui=none'
     end,
   },
-
+  {
+    'folke/tokyonight.nvim',
+    priority = 1000,
+    lazy = false,
+    opts = {},
+  },
+  {
+    'rose-pine/neovim',
+    name = 'rose-pine',
+  },
+  {
+    'catppuccin/nvim',
+    name = 'catppuccin',
+    priority = 1000,
+  },
+  {
+    'jacoborus/tender.vim',
+    config = function() end,
+  },
+  {
+    'habamax/vim-habamax',
+    name = 'habamax',
+    config = function() end,
+  },
+  {
+    'sainnhe/gruvbox-material',
+    name = 'gruvbox-material',
+  },
   -- Highlight todo, notes, etc in comments
   { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
 
@@ -833,7 +920,7 @@ require('lazy').setup({
       -- cursor location to LINE:COLUMN
       ---@diagnostic disable-next-line: duplicate-set-field
       statusline.section_location = function()
-        return '%2l:%-2v'
+        return false
       end
 
       -- ... and there is more!
@@ -844,7 +931,21 @@ require('lazy').setup({
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
     opts = {
-      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' },
+      ensure_installed = {
+        'bash',
+        'c',
+        'diff',
+        'html',
+        'lua',
+        'luadoc',
+        'markdown',
+        'vim',
+        'vimdoc',
+        'html',
+        'css',
+        'tsx',
+        'tree-sitter-proto',
+      },
       -- Autoinstall languages that are not installed
       auto_install = true,
       highlight = {
@@ -887,33 +988,92 @@ require('lazy').setup({
   -- require 'kickstart.plugins.neo-tree',
   -- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
 
-  -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
-  --    This is the easiest way to modularize your config.
-  --
-  --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
-  --    For additional information, see `:help lazy.nvim-lazy.nvim-structuring-your-plugins`
-  -- { import = 'custom.plugins' },
-}, {
-  ui = {
-    -- If you are using a Nerd Font: set icons to an empty table which will use the
-    -- default lazy.nvim defined Nerd Font icons, otherwise define a unicode icons table
-    icons = vim.g.have_nerd_font and {} or {
-      cmd = '⌘',
-      config = '🛠',
-      event = '📅',
-      ft = '📂',
-      init = '⚙',
-      keys = '🗝',
-      plugin = '🔌',
-      runtime = '💻',
-      require = '🌙',
-      source = '📄',
-      start = '🚀',
-      task = '📌',
-      lazy = '💤 ',
+  -- Custom plugins
+
+  -- Editorconfig plugin
+  'sgur/vim-editorconfig',
+  {
+    'christoomey/vim-tmux-navigator',
+    config = function() end,
+  },
+  -- Git in vim
+  {
+    'tpope/vim-fugitive',
+    config = function() end,
+  },
+
+  -- Install Apple's pkl LSP
+  {
+    'https://github.com/apple/pkl-neovim',
+    lazy = true,
+    event = {
+      'BufReadPre *.pkl',
+      'BufReadPre *.pcf',
+      'BufReadPre PklProject',
+    },
+    dependencies = {
+      'nvim-treesitter/nvim-treesitter',
+    },
+    build = function()
+      vim.cmd 'TSInstall! pkl'
+    end,
+  },
+  -- Tailwind LSP
+  {
+    'luckasRanarison/tailwind-tools.nvim',
+    dependencies = { 'nvim-treesitter/nvim-treesitter' },
+    opts = {
+      document_color = {
+        enabled = false, -- can be toggled by commands
+      },
+      conceal = {
+        enabled = false, -- can be toggled by commands
+      },
+      custom_filetypes = {},
     },
   },
-})
+  {
+    'tpope/vim-dadbod',
+    config = function() end,
+  },
+  {
+    'kristijanhusak/vim-dadbod-completion',
+    config = function() end,
+  },
+  {
+    'kristijanhusak/vim-dadbod-ui',
+    config = function() end,
+  },
+  {
+    'jackMort/ChatGPT.nvim',
+    event = 'VeryLazy',
+    config = function()
+      require('chatgpt').setup {
+        openai_params = {
+          model = 'gpt-4o',
+        },
+      }
+    end,
+    dependencies = {
+      'MunifTanjim/nui.nvim',
+      'nvim-lua/plenary.nvim',
+      'folke/trouble.nvim',
+      'nvim-telescope/telescope.nvim',
+    },
+  },
+  {
+    'sourcegraph/sg.nvim',
+    dependencies = { 'nvim-lua/plenary.nvim', 'nvim-telescope/telescope.nvim' },
+    config = function()
+      require('sg').setup {
+        accept_tos = true,
+        -- chat = {
+        --   default_model = 'openai/gpt-4o',
+        -- },
+      }
+    end,
+  },
+}
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
