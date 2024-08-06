@@ -837,13 +837,7 @@ require('lazy').setup {
     priority = 1000, -- Make sure to load this before all the other start plugins.
     init = function()
       -- Load the colorscheme here.
-      -- vim.cmd.colorscheme 'gruvbox-material'
-      -- vim.cmd.colorscheme 'retrobox'
-      -- vim.cmd.colorscheme 'minischeme'
-      -- vim.cmd.colorscheme 'tender'
-      vim.cmd.colorscheme 'kanagawa-dragon'
-      -- vim.cmd.colorscheme 'kanagawa-lotus'
-      -- vim.cmd.colorscheme 'solarized'
+      vim.cmd.colorscheme 'gruvbox-material'
 
       -- You can configure highlights by doing something like:
       vim.cmd.hi 'Comment gui=none'
