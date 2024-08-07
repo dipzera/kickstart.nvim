@@ -91,7 +91,7 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
 -- Set to true if you have a Nerd Font installed and selected in the terminal
-vim.g.have_nerd_font = false
+vim.g.have_nerd_font = true
 
 -- [[ Setting options ]]
 -- See `:help vim.opt`
@@ -100,6 +100,9 @@ vim.g.have_nerd_font = false
 --
 vim.o.laststatus = 3
 vim.o.cursorlineopt = 'number'
+
+-- Don't wrap lines
+vim.opt.wrap = false
 
 -- Set dark background by default
 vim.opt.background = 'dark'
@@ -112,7 +115,7 @@ vim.opt.termguicolors = true
 -- vim.opt.guicursor = ''
 --
 -- Make line numbers default
-vim.opt.number = true
+-- vim.opt.number = true
 -- You can also add relative line numbers, to help with jumping.
 --  Experiment for yourself to see if you like it!
 -- vim.opt.relativenumber = true
@@ -171,11 +174,18 @@ vim.opt.cursorline = true
 -- Minimal number of screen lines to keep above and below the cursor.
 vim.opt.scrolloff = 10
 
+-- Maximum width of text that is being inserted
+vim.opt.textwidth = 0
+vim.g.textwidht = 0
+
+-- Vertical column that indicates when is better to start new line
+vim.opt.colorcolumn = '88'
+
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
 
 -- Clear highlights on search when pressing <Esc> OR <C-c> in normal mode
---  See `:help hlsearch`
+--  See `:help :hlsearch`
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 vim.keymap.set('n', '<C-c>', '<cmd>nohlsearch<CR>')
 
@@ -204,6 +214,30 @@ vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left wind
 vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
+
+-- ************* CUSTOM KEYMAPS *************
+-- Write document
+vim.keymap.set('n', '<leader>dw', '<cmd>:w<CR>', { desc = '[D]ocument [W]rite' })
+
+-- Write down a JS console.log down below
+vim.keymap.set('n', '<leader>cl', 'oconsole.log()<Esc>ha', { desc = '[C]ode [L]og (JS)' })
+
+-- Opens a popup that displays documentation about the word under your cursor
+vim.keymap.set('n', 'K', vim.lsp.buf.hover, { desc = 'Hover Documentation' })
+
+-- ChatGPT package commands
+vim.keymap.set('n', '<leader>lc', '<cmd>ChatGPT<CR>', { desc = 'LLM [C]hat' })
+vim.keymap.set('n', '<leader>le', '<cmd>ChatGPTEditWithInstruction<CR>', { desc = 'LLM [E]dit' })
+vim.keymap.set('n', '<leader>lr', '<cmd>ChatGPTRun<CR>', { desc = 'LLM [R]un' })
+
+-- Sourcegraph's Cody command
+vim.keymap.set('n', '<leader>cc', '<cmd>CodyChat<CR>', { desc = '[C]ody [C]hat' })
+
+-- Open netrw
+vim.keymap.set('n', '<leader>se', '<cmd>Ex<CR>', { desc = '[S]earch in [E]xplorer' })
+vim.g.netrw_browse_split = 0
+vim.g.netrw_banner = 0
+vim.g.netrw_winsize = 25
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
@@ -244,9 +278,6 @@ vim.opt.rtp:prepend(lazypath)
 -- NOTE: Here is where you install your plugins.
 require('lazy').setup {
   -- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
-  -- Detect tabstop and shiftwidth automatically
-  { 'tpope/vim-sleuth', config = function() end },
-
   -- NOTE: Plugins can also be added by using a table,
   -- with the first argument being the link and the following
   -- keys can be used to configure plugin behavior/loading/etc.
@@ -311,14 +342,14 @@ require('lazy').setup {
 
       -- Document existing key chains
       require('which-key').register {
-        ['<leader>c'] = { name = '[C]ode', _ = 'which_key_ignore' },
-        ['<leader>d'] = { name = '[D]ocument', _ = 'which_key_ignore' },
-        ['<leader>r'] = { name = '[R]ename', _ = 'which_key_ignore' },
-        ['<leader>s'] = { name = '[S]earch', _ = 'which_key_ignore' },
-        ['<leader>w'] = { name = '[W]orkspace', _ = 'which_key_ignore' },
-        ['<leader>t'] = { name = '[T]oggle', _ = 'which_key_ignore' },
-        ['<leader>h'] = { name = 'Git [H]unk', _ = 'which_key_ignore' },
-        ['<leader>l'] = { name = '[L]arge Language Model', _ = 'which_key_ignore' },
+        ['<leader>c'] = { group = '[C]ode' },
+        ['<leader>d'] = { group = '[D]ocument' },
+        ['<leader>r'] = { group = '[R]ename' },
+        ['<leader>s'] = { group = '[S]earch' },
+        ['<leader>w'] = { group = '[W]orkspace' },
+        ['<leader>t'] = { group = '[T]oggle' },
+        ['<leader>h'] = { group = 'Git [H]unk' },
+        ['<leader>l'] = { name = '[L]arge Language Model', mode = { 'n', 'v' } },
       }
     end,
   },
@@ -380,12 +411,13 @@ require('lazy').setup {
         -- You can put your default mappings / updates / etc. in here
         --  All the info you're looking for is in `:help telescope.setup()`
         --
-        -- defaults = {
-        --   mappings = {
-        --     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
-        --   },
-        -- },
-        -- pickers = {}
+        defaults = {
+          mappings = {
+            i = { ['<c-enter>'] = 'to_fuzzy_refine' },
+          },
+          layout_strategy = 'vertical',
+        },
+        pickers = {},
         extensions = {
           ['ui-select'] = {
             require('telescope.themes').get_dropdown(),
@@ -527,7 +559,6 @@ require('lazy').setup {
           -- Fuzzy find all the symbols in your current document.
           --  Symbols are things like variables, functions, types, etc.
           map('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
-          map('<leader>dw', '<cmd>:w<CR>', '[D]ocument [W]write')
 
           -- Fuzzy find all the symbols in your current workspace.
           --  Similar to document symbols, except searches over your entire project.
@@ -540,18 +571,6 @@ require('lazy').setup {
           -- Execute a code action, usually your cursor needs to be on top of an error
           -- or a suggestion from your LSP for this to activate.
           map('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction')
-
-          -- Write down a JS console.log down below
-          map('<leader>cl', 'oconsole.log()<Esc>ha', '[C]ode [L]og (JS)')
-
-          -- Opens a popup that displays documentation about the word under your cursor
-          --  See `:help K` for why this keymap.
-          map('K', vim.lsp.buf.hover, 'Hover Documentation')
-          map('<leader>lc', '<cmd>ChatGPT<CR>', 'LLM [C]hat')
-          map('<leader>le', '<cmd>ChatGPTEditWithInstruction<CR>', 'LLM [E]dit')
-          map('<leader>lr', '<cmd>ChatGPTRun<CR>', 'LLM [R]un')
-
-          map('<leader>cc', '<cmd>CodyChat<CR>', '[C]ody [C]hat')
           -- The following two autocommands are used to highlight references of the
           -- word under your cursor when your cursor rests there for a little while.
           --    See `:help CursorHold` for information about when this is executed
@@ -787,11 +806,11 @@ require('lazy').setup {
           -- Accept ([y]es) the completion.
           --  This will auto-import if your LSP supports it.
           --  This will expand snippets if the LSP sent a snippet.
-          ['<C-y>'] = cmp.mapping.confirm { select = true },
+          -- ['<C-y>'] = cmp.mapping.confirm { select = true },
 
           -- If you prefer more traditional completion keymaps,
           -- you can uncomment the following lines
-          --['<CR>'] = cmp.mapping.confirm { select = true },
+          ['<CR>'] = cmp.mapping.confirm { select = true },
           --['<Tab>'] = cmp.mapping.select_next_item(),
           --['<S-Tab>'] = cmp.mapping.select_prev_item(),
 
@@ -912,7 +931,7 @@ require('lazy').setup {
         'lua',
         'luadoc',
         'markdown',
-        'markdown-inline',
+        -- 'markdown-inline',
         'vim',
         'vimdoc',
         'html',
@@ -1076,6 +1095,8 @@ require('lazy').setup {
       }
     end,
   },
+  -- Detect tabstop and shiftwidth automatically
+  { 'tpope/vim-sleuth', config = function() end },
 }
 
 -- The line beneath this is called `modeline`. See `:help modeline`
