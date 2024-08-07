@@ -15,6 +15,9 @@ vim.g.have_nerd_font = false
 vim.o.laststatus = 3
 vim.o.cursorlineopt = 'number'
 
+-- Don't wrap lines
+vim.opt.wrap = false
+
 -- Set dark background by default
 vim.opt.background = 'dark'
 
@@ -86,7 +89,7 @@ vim.opt.scrolloff = 10
 --  See `:help vim.keymap.set()`
 
 -- Clear highlights on search when pressing <Esc> OR <C-c> in normal mode
---  See `:help hlsearch`
+--  See `:help :hlsearch`
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
 -- Diagnostic keymaps
@@ -160,9 +163,6 @@ vim.opt.rtp:prepend(lazypath)
 -- NOTE: Here is where you install your plugins.
 require('lazy').setup {
   -- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
-  -- Detect tabstop and shiftwidth automatically
-  { 'tpope/vim-sleuth', config = function() end },
-
   -- NOTE: Plugins can also be added by using a table,
   -- with the first argument being the link and the following
   -- keys can be used to configure plugin behavior/loading/etc.
@@ -481,7 +481,6 @@ require('lazy').setup {
           -- Fuzzy find all the symbols in your current document.
           --  Symbols are things like variables, functions, types, etc.
           map('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
-          map('<leader>dw', '<cmd>:w<CR>', '[D]ocument [W]write')
 
           -- Fuzzy find all the symbols in your current workspace.
           --  Similar to document symbols, except searches over your entire project.
@@ -897,7 +896,7 @@ require('lazy').setup {
         'lua',
         'luadoc',
         'markdown',
-        'markdown-inline',
+        -- 'markdown-inline',
         'vim',
         'vimdoc',
         'html',
@@ -1067,6 +1066,8 @@ require('lazy').setup {
       }
     end,
   },
+  -- Detect tabstop and shiftwidth automatically
+  { 'tpope/vim-sleuth', config = function() end },
 }
 
 -- Set colorscheme after lazy is done setting up things
