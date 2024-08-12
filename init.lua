@@ -341,15 +341,16 @@ require('lazy').setup {
       require('which-key').setup()
 
       -- Document existing key chains
-      require('which-key').register {
-        ['<leader>c'] = { group = '[C]ode' },
-        ['<leader>d'] = { group = '[D]ocument' },
-        ['<leader>r'] = { group = '[R]ename' },
-        ['<leader>s'] = { group = '[S]earch' },
-        ['<leader>w'] = { group = '[W]orkspace' },
-        ['<leader>t'] = { group = '[T]oggle' },
-        ['<leader>h'] = { group = 'Git [H]unk' },
-        ['<leader>l'] = { name = '[L]arge Language Model', mode = { 'n', 'v' } },
+      require('which-key').add {
+        { '<leader>c', group = '[C]ode' },
+        { '<leader>d', group = '[D]ocument' },
+        { '<leader>r', group = '[R]ename' },
+        { '<leader>s', group = '[S]earch' },
+        { '<leader>w', group = '[W]orkspace' },
+        { '<leader>t', group = '[T]oggle' },
+        { '<leader>h', group = 'Git [H]unk' },
+        { '<leader>l', group = '[L]arge Language Model', mode = { 'n', 'v' } },
+        { '<leader>o', group = '[O]pen' },
       }
     end,
   },
@@ -976,7 +977,7 @@ require('lazy').setup {
   -- require 'kickstart.plugins.debug',
   -- require 'kickstart.plugins.indent_line',
   -- require 'kickstart.plugins.lint',
-  -- require 'kickstart.plugins.autopairs',
+  require 'kickstart.plugins.autopairs',
   -- require 'kickstart.plugins.neo-tree',
   -- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
 
@@ -1054,18 +1055,70 @@ require('lazy').setup {
       custom_filetypes = {},
     },
   },
-  {
-    'tpope/vim-dadbod',
-    config = function() end,
-  },
-  {
-    'kristijanhusak/vim-dadbod-completion',
-    config = function() end,
-  },
+  { 'tpope/vim-dadbod' },
   {
     'kristijanhusak/vim-dadbod-ui',
-    config = function() end,
+    -- dependencies = {
+    --   { 'tpope/vim-dadbod', lazy = true },
+    --   { 'kristijanhusak/vim-dadbod-completion', ft = { 'sql', 'mysql', 'plsql', 'postgres', 'postgresql' }, lazy = true }, -- Optional
+    -- },
+    -- cmd = {
+    --   'DBUI',
+    --   'DBUIToggle',
+    --   'DBUIAddConnection',
+    --   'DBUIFindBuffer',
+    -- },
+    -- init = function()
+    --   -- Your DBUI configuration
+    --   vim.g.db_ui_use_nerd_fonts = 1
+    -- end,
   },
+  { 'kristijanhusak/vim-dadbod-completion' },
+  -- {
+  --   'kndndrj/nvim-dbee',
+  --   enabled = true,
+  --   dependencies = { 'MunifTanjim/nui.nvim' },
+  --   build = function()
+  --     require('dbee').install()
+  --   end,
+  --   config = function()
+  --     local source = require 'dbee.sources'
+  --     require('dbee').setup {
+  --       sources = {
+  --         source.MemorySource:new({
+  --           ---@diagnostic disable-next-line: missing-fields
+  --           {
+  --             type = 'postgres',
+  --             name = 'app',
+  --             url = 'postgresql://user:password@localhost:5432/app',
+  --           },
+  --         }, 'app'),
+  --       },
+  --     }
+  --     vim.keymap.set('n', '<leader>od', function()
+  --       require('dbee').open()
+  --     end)
+  --
+  --     ---@diagnostic disable-next-line: param-type-mismatch
+  --     local base = vim.fs.joinpath(vim.fn.stdpath 'state', 'dbee', 'notes')
+  --     local pattern = string.format('%s/.*', base)
+  --     vim.filetype.add {
+  --       extension = {
+  --         sql = function(path, _)
+  --           if path:match(pattern) then
+  --             return 'sql.dbee'
+  --           end
+  --
+  --           return 'sql'
+  --         end,
+  --       },
+  --
+  --       pattern = {
+  --         [pattern] = 'sql.dbee',
+  --       },
+  --     }
+  --   end,
+  -- },
   {
     'jackMort/ChatGPT.nvim',
     event = 'VeryLazy',
