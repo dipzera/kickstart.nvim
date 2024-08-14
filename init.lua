@@ -112,7 +112,7 @@ vim.opt.termguicolors = true
 -- write a for loop
 
 -- Set the thick cursor for all modes
--- vim.opt.guicursor = ''
+vim.opt.guicursor = ''
 --
 -- Make line numbers default
 -- vim.opt.number = true
@@ -176,7 +176,7 @@ vim.opt.scrolloff = 10
 
 -- Maximum width of text that is being inserted
 vim.opt.textwidth = 0
-vim.g.textwidht = 0
+vim.g.textwidth = 0
 
 -- Vertical column that indicates when is better to start new line
 vim.opt.colorcolumn = '88'
@@ -238,6 +238,7 @@ vim.keymap.set('n', '<leader>se', '<cmd>Ex<CR>', { desc = '[S]earch in [E]xplore
 vim.g.netrw_browse_split = 0
 vim.g.netrw_banner = 0
 vim.g.netrw_winsize = 25
+vim.g.netrw_liststyle = 3
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
@@ -679,7 +680,7 @@ require('lazy').setup {
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
       local servers = {
         -- clangd = {},
-        -- gopls = {},
+        gopls = {},
         -- pyright = {},
         -- rust_analyzer = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
@@ -728,8 +729,6 @@ require('lazy').setup {
         'buf', -- protobuf,
         'html-lsp',
         'css-lsp',
-        'sqls',
-        'sqlfluff',
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
@@ -764,22 +763,22 @@ require('lazy').setup {
     },
     opts = {
       notify_on_error = false,
-      format_on_save = function(bufnr)
-        -- Disable "format_on_save lsp_fallback" for languages that don't
-        -- have a well standardized coding style. You can add additional
-        -- languages here or re-enable it for the disabled ones.
-        local disable_filetypes = { c = true, cpp = true }
-        local lsp_format_opt
-        if disable_filetypes[vim.bo[bufnr].filetype] then
-          lsp_format_opt = 'never'
-        else
-          lsp_format_opt = 'fallback'
-        end
-        return {
-          timeout_ms = 500,
-          lsp_format = lsp_format_opt,
-        }
-      end,
+      -- format_on_save = function(bufnr)
+      --   -- Disable "format_on_save lsp_fallback" for languages that don't
+      --   -- have a well standardized coding style. You can add additional
+      --   -- languages here or re-enable it for the disabled ones.
+      --   local disable_filetypes = { c = true, cpp = true }
+      --   local lsp_format_opt
+      --   if disable_filetypes[vim.bo[bufnr].filetype] then
+      --     lsp_format_opt = 'never'
+      --   else
+      --     lsp_format_opt = 'fallback'
+      --   end
+      --   return {
+      --     timeout_ms = 500,
+      --     lsp_format = lsp_format_opt,
+      --   }
+      -- end,
       formatters_by_ft = {
         lua = { 'stylua' },
         javascript = { 'prettier' },
@@ -788,7 +787,6 @@ require('lazy').setup {
         javascriptreact = { 'prettier' },
         tsserver = { 'prettier' },
         python = { 'black', 'isort' },
-        sql = { 'sqlfluff' },
       },
     },
   },
@@ -1075,21 +1073,21 @@ require('lazy').setup {
   },
 
   -- Install Apple's pkl LSP
-  {
-    'https://github.com/apple/pkl-neovim',
-    lazy = true,
-    event = {
-      'BufReadPre *.pkl',
-      'BufReadPre *.pcf',
-      'BufReadPre PklProject',
-    },
-    dependencies = {
-      'nvim-treesitter/nvim-treesitter',
-    },
-    build = function()
-      vim.cmd 'TSInstall! pkl'
-    end,
-  },
+  -- {
+  --   'https://github.com/apple/pkl-neovim',
+  --   lazy = true,
+  --   event = {
+  --     'BufReadPre *.pkl',
+  --     'BufReadPre *.pcf',
+  --     'BufReadPre PklProject',
+  --   },
+  --   dependencies = {
+  --     'nvim-treesitter/nvim-treesitter',
+  --   },
+  --   build = function()
+  --     vim.cmd 'TSInstall! pkl'
+  --   end,
+  -- },
   -- Tailwind LSP
   {
     'luckasRanarison/tailwind-tools.nvim',
@@ -1105,23 +1103,23 @@ require('lazy').setup {
     },
   },
   { 'tpope/vim-dadbod' },
-  {
-    'kristijanhusak/vim-dadbod-ui',
-    -- dependencies = {
-    --   { 'tpope/vim-dadbod', lazy = true },
-    --   { 'kristijanhusak/vim-dadbod-completion', ft = { 'sql', 'mysql', 'plsql', 'postgres', 'postgresql' }, lazy = true }, -- Optional
-    -- },
-    -- cmd = {
-    --   'DBUI',
-    --   'DBUIToggle',
-    --   'DBUIAddConnection',
-    --   'DBUIFindBuffer',
-    -- },
-    -- init = function()
-    --   -- Your DBUI configuration
-    --   vim.g.db_ui_use_nerd_fonts = 1
-    -- end,
-  },
+  -- {
+  --   'kristijanhusak/vim-dadbod-ui',
+  --   -- dependencies = {
+  --   --   { 'tpope/vim-dadbod', lazy = true },
+  --   --   { 'kristijanhusak/vim-dadbod-completion', ft = { 'sql', 'mysql', 'plsql', 'postgres', 'postgresql' }, lazy = true }, -- Optional
+  --   -- },
+  --   -- cmd = {
+  --   --   'DBUI',
+  --   --   'DBUIToggle',
+  --   --   'DBUIAddConnection',
+  --   --   'DBUIFindBuffer',
+  --   -- },
+  --   -- init = function()
+  --   --   -- Your DBUI configuration
+  --   --   vim.g.db_ui_use_nerd_fonts = 1
+  --   -- end,
+  -- },
   { 'kristijanhusak/vim-dadbod-completion' },
   -- {
   --   'kndndrj/nvim-dbee',
@@ -1199,6 +1197,11 @@ require('lazy').setup {
   },
   -- Detect tabstop and shiftwidth automatically
   { 'tpope/vim-sleuth', config = function() end },
+  {
+    'MeanderingProgrammer/render-markdown.nvim',
+    opts = {},
+    dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.nvim' },
+  },
 }
 
 -- The line beneath this is called `modeline`. See `:help modeline`
