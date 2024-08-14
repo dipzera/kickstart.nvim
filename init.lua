@@ -26,7 +26,7 @@ vim.opt.termguicolors = true
 -- write a for loop
 
 -- Set the thick cursor for all modes
--- vim.opt.guicursor = ''
+vim.opt.guicursor = ''
 --
 -- Make line numbers default
 vim.opt.number = true
@@ -1068,6 +1068,11 @@ require('lazy').setup {
   },
   -- Detect tabstop and shiftwidth automatically
   { 'tpope/vim-sleuth', config = function() end },
+  {
+    'MeanderingProgrammer/render-markdown.nvim',
+    opts = {},
+    dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.nvim' },
+  },
 }
 
 -- Set colorscheme after lazy is done setting up things
