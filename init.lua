@@ -23,7 +23,7 @@ vim.opt.termguicolors = true
 -- write a for loop
 
 -- Set the thick cursor for all modes
--- vim.opt.guicursor = ''
+vim.opt.guicursor = ''
 --
 -- Make line numbers default
 vim.opt.number = true
@@ -966,23 +966,23 @@ require('lazy').setup {
     },
   },
   { 'tpope/vim-dadbod' },
-  {
-    'kristijanhusak/vim-dadbod-ui',
-    -- dependencies = {
-    --   { 'tpope/vim-dadbod', lazy = true },
-    --   { 'kristijanhusak/vim-dadbod-completion', ft = { 'sql', 'mysql', 'plsql', 'postgres', 'postgresql' }, lazy = true }, -- Optional
-    -- },
-    -- cmd = {
-    --   'DBUI',
-    --   'DBUIToggle',
-    --   'DBUIAddConnection',
-    --   'DBUIFindBuffer',
-    -- },
-    -- init = function()
-    --   -- Your DBUI configuration
-    --   vim.g.db_ui_use_nerd_fonts = 1
-    -- end,
-  },
+  -- {
+  --   'kristijanhusak/vim-dadbod-ui',
+  --   -- dependencies = {
+  --   --   { 'tpope/vim-dadbod', lazy = true },
+  --   --   { 'kristijanhusak/vim-dadbod-completion', ft = { 'sql', 'mysql', 'plsql', 'postgres', 'postgresql' }, lazy = true }, -- Optional
+  --   -- },
+  --   -- cmd = {
+  --   --   'DBUI',
+  --   --   'DBUIToggle',
+  --   --   'DBUIAddConnection',
+  --   --   'DBUIFindBuffer',
+  --   -- },
+  --   -- init = function()
+  --   --   -- Your DBUI configuration
+  --   --   vim.g.db_ui_use_nerd_fonts = 1
+  --   -- end,
+  -- },
   { 'kristijanhusak/vim-dadbod-completion' },
   -- {
   --   'kndndrj/nvim-dbee',
