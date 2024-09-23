@@ -91,7 +91,7 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
 -- Set to true if you have a Nerd Font installed and selected in the terminal
-vim.g.have_nerd_font = true
+vim.g.have_nerd_font = false
 
 -- [[ Setting options ]]
 -- See `:help vim.opt`
@@ -101,8 +101,14 @@ vim.g.have_nerd_font = true
 vim.o.laststatus = 3
 vim.o.cursorlineopt = 'number'
 
--- Don't wrap lines
-vim.opt.wrap = false
+-- Wrap lines?
+vim.opt.wrap = true
+vim.opt.linebreak = true
+
+-- Riskier, but cleaner
+vim.opt.backup = false
+vim.opt.swapfile = false
+vim.opt.writebackup = false
 
 -- Set dark background by default
 vim.opt.background = 'dark'
@@ -112,7 +118,7 @@ vim.opt.termguicolors = true
 -- write a for loop
 
 -- Set the thick cursor for all modes
-vim.opt.guicursor = ''
+-- vim.opt.guicursor = ''
 --
 -- Make line numbers default
 -- vim.opt.number = true
@@ -169,7 +175,7 @@ vim.opt.listchars = { tab = '  ', trail = '·', nbsp = '␣' }
 vim.opt.inccommand = 'split'
 
 -- Show which line your cursor is on
-vim.opt.cursorline = true
+vim.opt.cursorline = false
 
 -- Minimal number of screen lines to keep above and below the cursor.
 vim.opt.scrolloff = 10
@@ -179,7 +185,7 @@ vim.opt.textwidth = 0
 vim.g.textwidth = 0
 
 -- Vertical column that indicates when is better to start new line
-vim.opt.colorcolumn = '88'
+-- vim.opt.colorcolumn = '88'
 
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
@@ -191,6 +197,12 @@ vim.keymap.set('n', '<C-c>', '<cmd>nohlsearch<CR>')
 
 -- Diagnostic keymaps
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
+vim.keymap.set('n', '[d', function()
+  vim.diagnostic.goto_prev()
+end)
+vim.keymap.set('n', ']d', function()
+  vim.diagnostic.goto_next()
+end)
 
 -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
 -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
@@ -223,12 +235,12 @@ vim.keymap.set('n', '<leader>dw', '<cmd>:w<CR>', { desc = '[D]ocument [W]rite' }
 vim.keymap.set('n', '<leader>cl', 'oconsole.log()<Esc>ha', { desc = '[C]ode [L]og (JS)' })
 
 -- Opens a popup that displays documentation about the word under your cursor
-vim.keymap.set('n', 'K', vim.lsp.buf.hover, { desc = 'Hover Documentation' })
+-- vim.keymap.set('n', 'K', vim.lsp.buf.hover, { desc = 'Hover Documentation' })
 
 -- ChatGPT package commands
 vim.keymap.set('n', '<leader>lc', '<cmd>ChatGPT<CR>', { desc = 'LLM [C]hat' })
 vim.keymap.set('n', '<leader>le', '<cmd>ChatGPTEditWithInstruction<CR>', { desc = 'LLM [E]dit' })
-vim.keymap.set('n', '<leader>lr', '<cmd>ChatGPTRun<CR>', { desc = 'LLM [R]un' })
+-- vim.keymap.set('n', '<leader>lr', '<cmd>ChatGPTRun<CR>', { desc = 'LLM [R]un' })
 
 -- Sourcegraph's Cody command
 vim.keymap.set('n', '<leader>cc', '<cmd>CodyChat<CR>', { desc = '[C]ody [C]hat' })
@@ -238,7 +250,7 @@ vim.keymap.set('n', '<leader>se', '<cmd>Ex<CR>', { desc = '[S]earch in [E]xplore
 vim.g.netrw_browse_split = 0
 vim.g.netrw_banner = 0
 vim.g.netrw_winsize = 25
-vim.g.netrw_liststyle = 3
+vim.g.netrw_liststyle = 0
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
@@ -312,7 +324,7 @@ require('lazy').setup {
         },
         on_attach = function()
           local gitsigns = require 'gitsigns'
-          vim.keymap.set('n', '<leader>b', function()
+          vim.keymap.set('n', '<leader>gb', function()
             gitsigns.blame_line { full = true }
           end, { desc = '[B]lame line' })
         end,
@@ -387,6 +399,7 @@ require('lazy').setup {
         { '<leader>h', group = 'Git [H]unk' },
         { '<leader>l', group = '[L]arge Language Model', mode = { 'n', 'v' } },
         { '<leader>o', group = '[O]pen' },
+        { '<leader>g', group = '[G]it' },
       },
     },
   },
@@ -681,7 +694,9 @@ require('lazy').setup {
       local servers = {
         -- clangd = {},
         gopls = {},
-        basedpyright = {},
+        basedpyright = {
+          typeCheckingMode = 'basic',
+        },
         -- rust_analyzer = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         --
@@ -787,6 +802,7 @@ require('lazy').setup {
         javascriptreact = { 'prettier' },
         tsserver = { 'prettier' },
         python = { 'black', 'isort' },
+        json = { 'prettier' },
       },
     },
   },
@@ -859,18 +875,19 @@ require('lazy').setup {
           -- Accept ([y]es) the completion.
           --  This will auto-import if your LSP supports it.
           --  This will expand snippets if the LSP sent a snippet.
-          -- ['<C-y>'] = cmp.mapping.confirm { select = true },
+          --
+          ['<C-y>'] = cmp.mapping.confirm { select = true },
 
           -- If you prefer more traditional completion keymaps,
           -- you can uncomment the following lines
-          ['<CR>'] = cmp.mapping.confirm { select = true },
-          --['<Tab>'] = cmp.mapping.select_next_item(),
-          --['<S-Tab>'] = cmp.mapping.select_prev_item(),
+          -- ['<CR>'] = cmp.mapping.confirm { select = true },
+          -- ['<Tab>'] = cmp.mapping.select_next_item(),
+          -- ['<S-Tab>'] = cmp.mapping.select_prev_item(),
 
           -- Manually trigger a completion from nvim-cmp.
           --  Generally you don't need this, because nvim-cmp will display
           --  completions whenever it has completion options available.
-          ['<C-Space>'] = cmp.mapping.complete {},
+          ['<C-s>'] = cmp.mapping.complete {},
 
           -- Think of <c-l> as moving to the right of your snippet expansion.
           --  So if you have a snippet that's like:
@@ -903,7 +920,7 @@ require('lazy').setup {
           { name = 'nvim_lsp' },
           { name = 'luasnip' },
           { name = 'path' },
-          { name = 'cody' },
+          { name = 'cody' }, -- Sourcegraph's Cody LLM Autocomplete based on Claude AI
         },
       }
 
@@ -926,7 +943,13 @@ require('lazy').setup {
     priority = 1000, -- Make sure to load this before all the other start plugins.
     init = function()
       -- Load the colorscheme here.
-      vim.cmd.colorscheme 'gruvbox-material'
+      -- vim.cmd.colorscheme 'gruvbox-material'
+      -- vim.cmd.colorscheme 'retrobox'
+      -- vim.cmd.colorscheme 'minischeme'
+      -- vim.cmd.colorscheme 'tender'
+      vim.cmd.colorscheme 'kanagawa-dragon'
+      -- vim.cmd.colorscheme 'kanagawa-lotus'
+      -- vim.cmd.colorscheme 'solarized'
 
       -- You can configure highlights by doing something like:
       vim.cmd.hi 'Comment gui=none'
@@ -956,17 +979,17 @@ require('lazy').setup {
       -- Simple and easy statusline.
       --  You could remove this setup call if you don't like it,
       --  and try some other statusline plugin
-      local statusline = require 'mini.statusline'
+      -- local statusline = require 'mini.statusline'
       -- set use_icons to true if you have a Nerd Font
-      statusline.setup { use_icons = vim.g.have_nerd_font }
+      -- statusline.setup { use_icons = vim.g.have_nerd_font }
 
       -- You can configure sections in the statusline by overriding their
       -- default behavior. For example, here we set the section for
       -- cursor location to LINE:COLUMN
       ---@diagnostic disable-next-line: duplicate-set-field
-      statusline.section_location = function()
-        return false
-      end
+      -- statusline.section_location = function()
+      --   return false
+      -- end
 
       -- ... and there is more!
       --  Check out: https://github.com/echasnovski/mini.nvim
@@ -1021,7 +1044,7 @@ require('lazy').setup {
   --  Here are some example plugins that I've included in the Kickstart repository.
   --  Uncomment any of the lines below to enable them (you will need to restart nvim).
   --
-  -- require 'kickstart.plugins.debug',
+  require 'kickstart.plugins.debug',
   -- require 'kickstart.plugins.indent_line',
   -- require 'kickstart.plugins.lint',
   require 'kickstart.plugins.autopairs',
@@ -1030,15 +1053,28 @@ require('lazy').setup {
 
   -- Themes
   {
-    'folke/tokyonight.nvim',
-    priority = 1000,
-    lazy = false,
-    opts = {},
+    'rebelot/kanagawa.nvim',
+    name = 'kanagawa',
+    opts = {
+      commentStyle = { italic = false },
+      keywordStyle = { italic = false },
+      statementStyle = { bold = true },
+      terminalColors = false,
+      colors = {
+        theme = {
+          all = {
+            ui = {
+              bg_gutter = 'none',
+            },
+          },
+        },
+      },
+    },
   },
-  {
-    'rose-pine/neovim',
-    name = 'rose-pine',
-  },
+  -- {
+  --   'rose-pine/neovim',
+  --   name = 'rose-pine',
+  -- },
   {
     'catppuccin/nvim',
     name = 'catppuccin',
@@ -1049,9 +1085,9 @@ require('lazy').setup {
     config = function() end,
   },
   {
-    'habamax/vim-habamax',
+    'ntk148v/habamax.nvim',
     name = 'habamax',
-    config = function() end,
+    dependencies = { 'rktjmp/lush.nvim' },
   },
   {
     'sainnhe/gruvbox-material',
@@ -1062,10 +1098,11 @@ require('lazy').setup {
 
   -- Editorconfig plugin
   'sgur/vim-editorconfig',
-  {
-    'christoomey/vim-tmux-navigator',
-    config = function() end,
-  },
+  -- Jump to tmux pane frm neovim
+  -- {
+  --   'christoomey/vim-tmux-navigator',
+  --   config = function() end,
+  -- },
   -- Git in vim
   {
     'tpope/vim-fugitive',
@@ -1172,7 +1209,11 @@ require('lazy').setup {
     config = function()
       require('chatgpt').setup {
         openai_params = {
-          model = 'gpt-4o',
+          model = 'gpt-o1',
+          max_tokens = 4096,
+        },
+        chat = {
+          max_line_length = 9999,
         },
       }
     end,
@@ -1197,11 +1238,11 @@ require('lazy').setup {
   },
   -- Detect tabstop and shiftwidth automatically
   { 'tpope/vim-sleuth', config = function() end },
-  {
-    'MeanderingProgrammer/render-markdown.nvim',
-    opts = {},
-    dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.nvim' },
-  },
+  -- {
+  --   'MeanderingProgrammer/render-markdown.nvim',
+  --   opts = {},
+  --   dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.nvim' },
+  -- },
 }
 
 -- The line beneath this is called `modeline`. See `:help modeline`
