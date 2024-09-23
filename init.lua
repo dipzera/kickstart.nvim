@@ -15,8 +15,14 @@ vim.g.have_nerd_font = false
 vim.o.laststatus = 3
 vim.o.cursorlineopt = 'number'
 
--- Don't wrap lines
-vim.opt.wrap = false
+-- Wrap lines?
+vim.opt.wrap = true
+vim.opt.linebreak = true
+
+-- Riskier, but cleaner
+vim.opt.backup = false
+vim.opt.swapfile = false
+vim.opt.writebackup = false
 
 -- Set dark background by default
 vim.opt.background = 'dark'
@@ -26,7 +32,7 @@ vim.opt.termguicolors = true
 -- write a for loop
 
 -- Set the thick cursor for all modes
-vim.opt.guicursor = ''
+-- vim.opt.guicursor = ''
 --
 -- Make line numbers default
 vim.opt.number = true
@@ -836,7 +842,13 @@ require('lazy').setup {
     priority = 1000, -- Make sure to load this before all the other start plugins.
     init = function()
       -- Load the colorscheme here.
-      vim.cmd.colorscheme 'gruvbox-material'
+      -- vim.cmd.colorscheme 'gruvbox-material'
+      -- vim.cmd.colorscheme 'retrobox'
+      -- vim.cmd.colorscheme 'minischeme'
+      -- vim.cmd.colorscheme 'tender'
+      vim.cmd.colorscheme 'kanagawa-dragon'
+      -- vim.cmd.colorscheme 'kanagawa-lotus'
+      -- vim.cmd.colorscheme 'solarized'
 
       -- You can configure highlights by doing something like:
       vim.cmd.hi 'Comment gui=none'
@@ -1068,11 +1080,11 @@ require('lazy').setup {
   },
   -- Detect tabstop and shiftwidth automatically
   { 'tpope/vim-sleuth', config = function() end },
-  {
-    'MeanderingProgrammer/render-markdown.nvim',
-    opts = {},
-    dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.nvim' },
-  },
+  -- {
+  --   'MeanderingProgrammer/render-markdown.nvim',
+  --   opts = {},
+  --   dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.nvim' },
+  -- },
 }
 
 -- Set colorscheme after lazy is done setting up things
