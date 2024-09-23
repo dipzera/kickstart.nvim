@@ -23,7 +23,7 @@ vim.opt.termguicolors = true
 -- write a for loop
 
 -- Set the thick cursor for all modes
-vim.opt.guicursor = ''
+-- vim.opt.guicursor = ''
 --
 -- Make line numbers default
 vim.opt.number = true
@@ -77,7 +77,7 @@ vim.opt.listchars = { tab = '  ', trail = '·', nbsp = '␣' }
 vim.opt.inccommand = 'split'
 
 -- Show which line your cursor is on
-vim.opt.cursorline = true
+vim.opt.cursorline = false
 
 -- Minimal number of screen lines to keep above and below the cursor.
 vim.opt.scrolloff = 10
@@ -91,6 +91,12 @@ vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
 -- Diagnostic keymaps
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
+vim.keymap.set('n', '[d', function()
+  vim.diagnostic.goto_prev()
+end)
+vim.keymap.set('n', ']d', function()
+  vim.diagnostic.goto_next()
+end)
 
 -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
 -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
@@ -775,7 +781,6 @@ require('lazy').setup {
           -- Manually trigger a completion from nvim-cmp.
           --  Generally you don't need this, because nvim-cmp will display
           --  completions whenever it has completion options available.
-          -- ['<C-Space>'] = cmp.mapping.complete {},
           ['<C-Space>'] = cmp.mapping.complete {},
 
           -- Think of <c-l> as moving to the right of your snippet expansion.
@@ -832,7 +837,13 @@ require('lazy').setup {
     priority = 1000, -- Make sure to load this before all the other start plugins.
     init = function()
       -- Load the colorscheme here.
-      vim.cmd.colorscheme 'gruvbox-material'
+      -- vim.cmd.colorscheme 'gruvbox-material'
+      -- vim.cmd.colorscheme 'retrobox'
+      -- vim.cmd.colorscheme 'minischeme'
+      -- vim.cmd.colorscheme 'tender'
+      vim.cmd.colorscheme 'kanagawa-dragon'
+      -- vim.cmd.colorscheme 'kanagawa-lotus'
+      -- vim.cmd.colorscheme 'solarized'
 
       -- You can configure highlights by doing something like:
       vim.cmd.hi 'Comment gui=none'
@@ -870,9 +881,9 @@ require('lazy').setup {
       -- default behavior. For example, here we set the section for
       -- cursor location to LINE:COLUMN
       ---@diagnostic disable-next-line: duplicate-set-field
-      statusline.section_location = function()
-        return false
-      end
+      -- statusline.section_location = function()
+      --   return false
+      -- end
 
       -- ... and there is more!
       --  Check out: https://github.com/echasnovski/mini.nvim
@@ -928,7 +939,7 @@ require('lazy').setup {
   --  Here are some example plugins that I've included in the Kickstart repository.
   --  Uncomment any of the lines below to enable them (you will need to restart nvim).
   --
-  -- require 'kickstart.plugins.debug',
+  require 'kickstart.plugins.debug',
   -- require 'kickstart.plugins.indent_line',
   -- require 'kickstart.plugins.lint',
   -- require 'kickstart.plugins.autopairs',
@@ -1035,7 +1046,11 @@ require('lazy').setup {
     config = function()
       require('chatgpt').setup {
         openai_params = {
-          model = 'gpt-4o',
+          model = 'gpt-o1',
+          max_tokens = 4096,
+        },
+        chat = {
+          max_line_length = 9999,
         },
       }
     end,
