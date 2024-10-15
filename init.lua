@@ -91,7 +91,7 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
 -- Set to true if you have a Nerd Font installed and selected in the terminal
-vim.g.have_nerd_font = false
+vim.g.have_nerd_font = true
 
 -- [[ Setting options ]]
 -- See `:help vim.opt`
@@ -102,8 +102,8 @@ vim.o.laststatus = 3
 vim.o.cursorlineopt = 'number'
 
 -- Wrap lines?
-vim.opt.wrap = true
-vim.opt.linebreak = true
+vim.opt.wrap = false
+vim.opt.linebreak = false
 
 -- Riskier, but cleaner
 vim.opt.backup = false
@@ -647,7 +647,13 @@ require('lazy').setup {
         -- clangd = {},
         gopls = {},
         basedpyright = {
-          typeCheckingMode = 'basic',
+          settings = {
+            basedpyright = {
+              analysis = {
+                typeCheckingMode = 'standard',
+              }
+            },
+          },
         },
         -- rust_analyzer = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
