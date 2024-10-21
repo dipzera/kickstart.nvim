@@ -5,35 +5,13 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
 -- Set to true if you have a Nerd Font installed and selected in the terminal
-vim.g.have_nerd_font = true
+vim.g.have_nerd_font = false
 
 -- [[ Setting options ]]
 -- See `:help vim.opt`
 -- NOTE: You can change these options as you wish!
 --  For more options, you can see `:help option-list`
---
-vim.o.laststatus = 3
-vim.o.cursorlineopt = 'number'
 
--- Wrap lines?
-vim.opt.wrap = false
-vim.opt.linebreak = false
-
--- Riskier, but cleaner
-vim.opt.backup = false
-vim.opt.swapfile = false
-vim.opt.writebackup = false
-
--- Set dark background by default
-vim.opt.background = 'dark'
-
-vim.opt.termguicolors = true
-
--- write a for loop
-
--- Set the thick cursor for all modes
--- vim.opt.guicursor = ''
---
 -- Make line numbers default
 vim.opt.number = true
 
@@ -79,14 +57,13 @@ vim.opt.splitbelow = true
 --  See `:help 'list'`
 --  and `:help 'listchars'`
 vim.opt.list = true
--- vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
-vim.opt.listchars = { tab = '  ', trail = '·', nbsp = '␣' }
+vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
 
 -- Preview substitutions live, as you type!
 vim.opt.inccommand = 'split'
 
 -- Show which line your cursor is on
-vim.opt.cursorline = false
+vim.opt.cursorline = true
 
 -- Minimal number of screen lines to keep above and below the cursor.
 vim.opt.scrolloff = 10
@@ -100,12 +77,6 @@ vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
 -- Diagnostic keymaps
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
-vim.keymap.set('n', '[d', function()
-  vim.diagnostic.goto_prev()
-end)
-vim.keymap.set('n', ']d', function()
-  vim.diagnostic.goto_next()
-end)
 
 -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
 -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
@@ -167,8 +138,10 @@ vim.opt.rtp:prepend(lazypath)
 --    :Lazy update
 --
 -- NOTE: Here is where you install your plugins.
-require('lazy').setup {
+require('lazy').setup({
   -- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
+  'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
+
   -- NOTE: Plugins can also be added by using a table,
   -- with the first argument being the link and the following
   -- keys can be used to configure plugin behavior/loading/etc.
@@ -500,17 +473,10 @@ require('lazy').setup {
           -- or a suggestion from your LSP for this to activate.
           map('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction', { 'n', 'x' })
 
-          -- Write down a JS console.log down below
-          map('<leader>cl', 'oconsole.log()<Esc>ha', '[C]ode [L]og (JS)')
+          -- WARN: This is not Goto Definition, this is Goto Declaration.
+          --  For example, in C this would take you to the header.
+          map('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
 
-          -- Opens a popup that displays documentation about the word under your cursor
-          --  See `:help K` for why this keymap.
-          map('K', vim.lsp.buf.hover, 'Hover Documentation')
-          map('<leader>lc', '<cmd>ChatGPT<CR>', 'LLM [C]hat')
-          map('<leader>le', '<cmd>ChatGPTEditWithInstruction<CR>', 'LLM [E]dit')
-          map('<leader>lr', '<cmd>ChatGPTRun<CR>', 'LLM [R]un')
-
-          map('<leader>cc', '<cmd>CodyChat<CR>', '[C]ody [C]hat')
           -- The following two autocommands are used to highlight references of the
           -- word under your cursor when your cursor rests there for a little while.
           --    See `:help CursorHold` for information about when this is executed
@@ -672,22 +638,22 @@ require('lazy').setup {
     },
     opts = {
       notify_on_error = false,
-      -- format_on_save = function(bufnr)
-      --   -- Disable "format_on_save lsp_fallback" for languages that don't
-      --   -- have a well standardized coding style. You can add additional
-      --   -- languages here or re-enable it for the disabled ones.
-      --   local disable_filetypes = { c = true, cpp = true }
-      --   local lsp_format_opt
-      --   if disable_filetypes[vim.bo[bufnr].filetype] then
-      --     lsp_format_opt = 'never'
-      --   else
-      --     lsp_format_opt = 'fallback'
-      --   end
-      --   return {
-      --     timeout_ms = 500,
-      --     lsp_format = lsp_format_opt,
-      --   }
-      -- end,
+      format_on_save = function(bufnr)
+        -- Disable "format_on_save lsp_fallback" for languages that don't
+        -- have a well standardized coding style. You can add additional
+        -- languages here or re-enable it for the disabled ones.
+        local disable_filetypes = { c = true, cpp = true }
+        local lsp_format_opt
+        if disable_filetypes[vim.bo[bufnr].filetype] then
+          lsp_format_opt = 'never'
+        else
+          lsp_format_opt = 'fallback'
+        end
+        return {
+          timeout_ms = 500,
+          lsp_format = lsp_format_opt,
+        }
+      end,
       formatters_by_ft = {
         lua = { 'stylua' },
         -- Conform can also run multiple formatters sequentially
@@ -822,14 +788,6 @@ require('lazy').setup {
           { name = 'cody' }, -- Sourcegraph's Cody LLM Autocomplete based on Claude AI
         },
       }
-
-      -- SQL specific auto completion
-      cmp.setup.filetype({ 'sql' }, {
-        sources = {
-          { name = 'vim-dadbod-completion' },
-          { name = 'buffer' },
-        },
-      })
     end,
   },
 
@@ -842,13 +800,9 @@ require('lazy').setup {
     priority = 1000, -- Make sure to load this before all the other start plugins.
     init = function()
       -- Load the colorscheme here.
-      -- vim.cmd.colorscheme 'gruvbox-material'
-      -- vim.cmd.colorscheme 'retrobox'
-      -- vim.cmd.colorscheme 'minischeme'
-      -- vim.cmd.colorscheme 'tender'
-      vim.cmd.colorscheme 'kanagawa-dragon'
-      -- vim.cmd.colorscheme 'kanagawa-lotus'
-      -- vim.cmd.colorscheme 'solarized'
+      -- Like many other themes, this one has different styles, and you could load
+      -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
+      vim.cmd.colorscheme 'tokyonight'
 
       -- You can configure highlights by doing something like:
       vim.cmd.hi 'Comment gui=none'
@@ -944,7 +898,7 @@ require('lazy').setup {
   --  Here are some example plugins that I've included in the Kickstart repository.
   --  Uncomment any of the lines below to enable them (you will need to restart nvim).
   --
-  require 'kickstart.plugins.debug',
+  -- require 'kickstart.plugins.debug',
   -- require 'kickstart.plugins.indent_line',
   -- require 'kickstart.plugins.lint',
   -- require 'kickstart.plugins.autopairs',
@@ -981,111 +935,7 @@ require('lazy').setup {
       lazy = '💤 ',
     },
   },
-  { 'tpope/vim-dadbod' },
-  -- {
-  --   'kristijanhusak/vim-dadbod-ui',
-  --   -- dependencies = {
-  --   --   { 'tpope/vim-dadbod', lazy = true },
-  --   --   { 'kristijanhusak/vim-dadbod-completion', ft = { 'sql', 'mysql', 'plsql', 'postgres', 'postgresql' }, lazy = true }, -- Optional
-  --   -- },
-  --   -- cmd = {
-  --   --   'DBUI',
-  --   --   'DBUIToggle',
-  --   --   'DBUIAddConnection',
-  --   --   'DBUIFindBuffer',
-  --   -- },
-  --   -- init = function()
-  --   --   -- Your DBUI configuration
-  --   --   vim.g.db_ui_use_nerd_fonts = 1
-  --   -- end,
-  -- },
-  { 'kristijanhusak/vim-dadbod-completion' },
-  -- {
-  --   'kndndrj/nvim-dbee',
-  --   enabled = true,
-  --   dependencies = { 'MunifTanjim/nui.nvim' },
-  --   build = function()
-  --     require('dbee').install()
-  --   end,
-  --   config = function()
-  --     local source = require 'dbee.sources'
-  --     require('dbee').setup {
-  --       sources = {
-  --         source.MemorySource:new({
-  --           ---@diagnostic disable-next-line: missing-fields
-  --           {
-  --             type = 'postgres',
-  --             name = 'app',
-  --             url = 'postgresql://user:password@localhost:5432/app',
-  --           },
-  --         }, 'app'),
-  --       },
-  --     }
-  --     vim.keymap.set('n', '<leader>od', function()
-  --       require('dbee').open()
-  --     end)
-  --
-  --     ---@diagnostic disable-next-line: param-type-mismatch
-  --     local base = vim.fs.joinpath(vim.fn.stdpath 'state', 'dbee', 'notes')
-  --     local pattern = string.format('%s/.*', base)
-  --     vim.filetype.add {
-  --       extension = {
-  --         sql = function(path, _)
-  --           if path:match(pattern) then
-  --             return 'sql.dbee'
-  --           end
-  --
-  --           return 'sql'
-  --         end,
-  --       },
-  --
-  --       pattern = {
-  --         [pattern] = 'sql.dbee',
-  --       },
-  --     }
-  --   end,
-  -- },
-  {
-    'jackMort/ChatGPT.nvim',
-    event = 'VeryLazy',
-    config = function()
-      require('chatgpt').setup {
-        openai_params = {
-          model = 'gpt-o1',
-          max_tokens = 4096,
-        },
-        chat = {
-          max_line_length = 9999,
-        },
-      }
-    end,
-    dependencies = {
-      'MunifTanjim/nui.nvim',
-      'nvim-lua/plenary.nvim',
-      'folke/trouble.nvim',
-      'nvim-telescope/telescope.nvim',
-    },
-  },
-  {
-    'sourcegraph/sg.nvim',
-    dependencies = { 'nvim-lua/plenary.nvim', 'nvim-telescope/telescope.nvim' },
-    config = function()
-      require('sg').setup {
-        accept_tos = true,
-        -- chat = {
-        --   default_model = 'openai/gpt-4o',
-        -- },
-      }
-    end,
-  },
-  -- Detect tabstop and shiftwidth automatically
-  { 'tpope/vim-sleuth', config = function() end },
-  -- {
-  --   'MeanderingProgrammer/render-markdown.nvim',
-  --   opts = {},
-  --   dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.nvim' },
-  -- },
-}
+})
 
 -- Set colorscheme after lazy is done setting up things
 vim.cmd.colorscheme 'gruvbox-material'
