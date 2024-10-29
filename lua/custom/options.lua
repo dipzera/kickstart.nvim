@@ -11,6 +11,10 @@ vim.opt.linebreak = true
 -- Set dark background by default
 vim.opt.background = 'dark'
 
+vim.opt.termguicolors = true
+
+vim.opt.cursorline = false
+
 -- Don't show tabs as certain whitespace characters
 vim.opt.listchars = { tab = '  ', trail = '·', nbsp = '␣' }
 
