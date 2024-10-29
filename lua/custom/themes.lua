@@ -1,5 +1,3 @@
-vim.cmd [[colorscheme default]]
-
 return {
   {
     'rebelot/kanagawa.nvim',
