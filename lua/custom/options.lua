@@ -5,7 +5,8 @@ vim.opt.number = false
 vim.opt.showmode = true
 
 -- Wrap lines?
-vim.opt.wrap = true
+vim.opt.wrap = false
+
 vim.opt.linebreak = true
 
 -- Set dark background by default
@@ -24,32 +25,36 @@ vim.opt.listchars = { tab = '  ', trail = '·', nbsp = '␣' }
 
 -- Vertical column that indicates when is better to start new line
 -- vim.opt.colorcolumn = '88'
+-- Consider setting to true by default
+vim.g.editorconfig = false
 
 -- ======== From Rob's config ========
 
 -- automatically indent new lines
-vim.opt.autoindent = true
+-- vim.opt.autoindent = true
 
 -- replace tabs with spaces automatically
 vim.opt.expandtab = true
 
-vim.opt.tabstop = 2
+-- vim.opt.tabstop = 2
 
 vim.opt.ignorecase = false
 
 vim.opt.autowrite = true
 
 vim.opt.ruler = true
-vim.opt.rulerformat = "%30(%=%#LineNr#%.50F [%{strlen(&ft)?&ft:'none'}] %l:%c %p%%%)"
+-- vim.opt.rulerformat = "%100(%=%#LineNr#%F [%{strlen(&ft)?&ft:'none'}] %l:%c %p%%%)"
+vim.opt.rulerformat = "%50(%=%#LineNr#%F %l:%c %p%%%)"
+-- vim.opt.rulerformat = "%55(%1*%{strftime('%a %b %e %I:%M %p')} %5l,%-6(%c%V%) %P%)%*"
 
-vim.opt.softtabstop = 2
+-- vim.opt.softtabstop = 2
 
 -- mostly used with >> and <<
-vim.opt.shiftwidth = 2
+-- vim.opt.shiftwidth = 2
 
-vim.opt.smartindent = true
+-- vim.opt.smartindent = true
 
-vim.opt.smarttab = true
+-- vim.opt.smarttab = true
 
 -- enough for line numbers + gutter within 80 standard
 vim.opt.textwidth = 72
