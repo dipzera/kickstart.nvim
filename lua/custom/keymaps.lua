@@ -26,8 +26,8 @@ vim.keymap.set('n', '<leader>le', '<cmd>ChatGPTEditWithInstruction<CR>', { desc 
 -- Sourcegraph's Cody command
 vim.keymap.set('n', '<leader>cc', '<cmd>CodyChat<CR>', { desc = '[C]ody [C]hat' })
 
--- Open netrw
-vim.keymap.set('n', '<leader>se', '<cmd>Ex<CR>', { desc = '[S]earch in [E]xplorer' })
+-- Open explorer
+vim.keymap.set('n', '<leader>se', '<cmd>Oil<CR>', { desc = '[S]earch in [E]xplorer' })
 
 -- Write down a JS console.log down below
 vim.keymap.set('n', '<leader>cl', 'oconsole.log()<Esc>ha', { desc = '[C]ode [L]og (JS)' })
