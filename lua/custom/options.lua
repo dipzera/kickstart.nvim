@@ -1,22 +1,6 @@
 -- No line numbers
 vim.opt.number = false
 
-<<<<<<< HEAD
--- Show mode in status line
-vim.opt.showmode = true
-
--- Wrap lines?
-vim.opt.wrap = false
-
-vim.opt.linebreak = true
-
--- Set dark background by default
-vim.opt.background = 'dark'
-
-vim.opt.termguicolors = true
-
-vim.opt.cursorline = false
-=======
 -- No idea what it does?
 -- vim.o.laststatus = 3
 -- vim.o.cursorlineopt = 'number'
@@ -35,7 +19,6 @@ vim.opt.writebackup = false
 
 -- Enable term GUI colors
 -- vim.opt.termguicolors = true
->>>>>>> 0ef2abe (Overhaul)
 
 -- Don't show tabs as certain whitespace characters
 vim.opt.listchars = { tab = '  ', trail = '·', nbsp = '␣' }
@@ -46,7 +29,6 @@ vim.opt.listchars = { tab = '  ', trail = '·', nbsp = '␣' }
 
 -- Vertical column that indicates when is better to start new line
 -- vim.opt.colorcolumn = '88'
-<<<<<<< HEAD
 -- Consider setting to true by default
 vim.g.editorconfig = false
 
@@ -90,7 +72,5 @@ vim.opt.writebackup = false
 vim.opt.laststatus = 0
 
 vim.opt.ttyfast = true
-=======
->>>>>>> 0ef2abe (Overhaul)
 
 return {}
