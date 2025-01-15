@@ -4,7 +4,7 @@ return {
   config = function()
     require('chatgpt').setup {
       openai_params = {
-        model = 'gpt-o1',
+        model = 'gpt-4o',
         max_tokens = 4096,
       },
       chat = {

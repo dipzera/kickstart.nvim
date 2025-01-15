@@ -37,4 +37,6 @@ vim.keymap.set('n', '<leader>lc', '<cmd>ChatGPT<CR>', { desc = 'GPT [C]hat' })
 vim.keymap.set('n', '<leader>le', '<cmd>ChatGPTEditWithInstruction<CR>', { desc = 'GPT [E]dit' })
 vim.keymap.set('n', '<leader>lr', '<cmd>ChatGPTRun<CR>', { desc = 'GPT [R]un' })
 
+-- vim.keymap.set({'n', 't'}, '<leader>tt', '<cmd>term<CR>', { desc = '[T]oggle [T]erminal' })
+
 return {}
