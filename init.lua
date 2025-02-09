@@ -633,16 +633,16 @@ require('lazy').setup({
     'stevearc/conform.nvim',
     event = { 'BufWritePre' },
     cmd = { 'ConformInfo' },
-    keys = {
-      {
-        '<leader>f',
-        function()
-          require('conform').format { async = true, lsp_format = 'fallback' }
-        end,
-        mode = '',
-        desc = '[F]ormat buffer',
-      },
-    },
+    -- keys = {
+    --   {
+    --     '<leader>f',
+    --     function()
+    --       require('conform').format { async = true, lsp_format = 'fallback' }
+    --     end,
+    --     mode = '',
+    --     desc = '[F]ormat buffer',
+    --   },
+    -- },
     opts = {
       notify_on_error = false,
       -- format_on_save = function(bufnr)
@@ -675,13 +675,15 @@ require('lazy').setup({
         tsserver = { 'prettier' },
         python = { 'black', 'isort' },
         json = { 'prettier' },
+        html = { 'prettier' },
+        css = { 'prettier' },
       },
     },
   },
 
   { -- Autocompletion
     'hrsh7th/nvim-cmp',
-    -- event = 'InsertEnter',
+    event = 'InsertEnter',
     lazy = false,
     priority = 100,
     dependencies = {
@@ -719,98 +721,98 @@ require('lazy').setup({
       'onsails/lspkind.nvim', -- VSC*de like pictograms in the completion menu
       'hrsh7th/cmp-buffer',
       'roobert/tailwindcss-colorizer-cmp.nvim',
-      'zbirenbaum/copilot.lua',
-      'zbirenbaum/copilot-cmp',
+      -- 'zbirenbaum/copilot.lua',
+      -- 'zbirenbaum/copilot-cmp',
     },
     config = function()
-      require('copilot').setup {
-        suggestion = { enabled = false },
-        panel = { enabled = false },
-      }
-
-      require('copilot_cmp').setup()
-
-      require 'custom.completion'
+      -- require('copilot').setup {
+      --   suggestion = { enabled = false },
+      --   panel = { enabled = false },
+      -- }
+      --
+      -- require('copilot_cmp').setup()
+      --
+      -- require 'custom.completion'
 
       -- See `:help cmp`
-      -- local cmp = require 'cmp'
-      -- local luasnip = require 'luasnip'
-      -- luasnip.config.setup {}
+      local cmp = require 'cmp'
+      local luasnip = require 'luasnip'
+      luasnip.config.setup {}
 
-      -- cmp.setup {
-      --   preselect = cmp.PreselectMode.None,
-      --   snippet = {
-      --     expand = function(args)
-      --       luasnip.lsp_expand(args.body)
-      --     end,
-      --   },
-      --   completion = { completeopt = 'menu,menuone,noinsert' },
-      --
-      --   -- For an understanding of why these mappings were
-      --   -- chosen, you will need to read `:help ins-completion`
-      --   --
-      --   -- No, but seriously. Please read `:help ins-completion`, it is really good!
-      --   mapping = cmp.mapping.preset.insert {
-      --     -- Select the [n]ext item
-      --     ['<C-n>'] = cmp.mapping.select_next_item(),
-      --     -- Select the [p]revious item
-      --     ['<C-p>'] = cmp.mapping.select_prev_item(),
-      --
-      --     -- Scroll the documentation window [b]ack / [f]orward
-      --     ['<C-b>'] = cmp.mapping.scroll_docs(-4),
-      --     ['<C-f>'] = cmp.mapping.scroll_docs(4),
-      --
-      --     -- Accept ([y]es) the completion.
-      --     --  This will auto-import if your LSP supports it.
-      --     --  This will expand snippets if the LSP sent a snippet.
-      --     --
-      --     ['<C-y>'] = cmp.mapping.confirm { select = true },
-      --
-      --     -- If you prefer more traditional completion keymaps,
-      --     -- you can uncomment the following lines
-      --     -- ['<CR>'] = cmp.mapping.confirm { select = true },
-      --     -- ['<Tab>'] = cmp.mapping.select_next_item(),
-      --     -- ['<S-Tab>'] = cmp.mapping.select_prev_item(),
-      --
-      --     -- Manually trigger a completion from nvim-cmp.
-      --     --  Generally you don't need this, because nvim-cmp will display
-      --     --  completions whenever it has completion options available.
-      --     ['<C-Space>'] = cmp.mapping.complete {},
-      --
-      --     -- Think of <c-l> as moving to the right of your snippet expansion.
-      --     --  So if you have a snippet that's like:
-      --     --  function $name($args)
-      --     --    $body
-      --     --  end
-      --     --
-      --     -- <c-l> will move you to the right of each of the expansion locations.
-      --     -- <c-h> is similar, except moving you backwards.
-      --     ['<C-l>'] = cmp.mapping(function()
-      --       if luasnip.expand_or_locally_jumpable() then
-      --         luasnip.expand_or_jump()
-      --       end
-      --     end, { 'i', 's' }),
-      --     ['<C-h>'] = cmp.mapping(function()
-      --       if luasnip.locally_jumpable(-1) then
-      --         luasnip.jump(-1)
-      --       end
-      --     end, { 'i', 's' }),
-      --
-      --     -- For more advanced Luasnip keymaps (e.g. selecting choice nodes, expansion) see:
-      --     --    https://github.com/L3MON4D3/LuaSnip?tab=readme-ov-file#keymaps
-      --   },
-      --   sources = {
-      --     {
-      --       name = 'lazydev',
-      --       -- set group index to 0 to skip loading LuaLS completions as lazydev recommends it
-      --       group_index = 0,
-      --     },
-      --     { name = 'nvim_lsp' },
-      --     { name = 'luasnip' },
-      --     { name = 'path' },
-      --     { name = 'cody' }, -- Sourcegraph's Cody LLM Autocomplete, using Anthropic's Claude by default
-      --   },
-      -- }
+      cmp.setup {
+        preselect = cmp.PreselectMode.None,
+        snippet = {
+          expand = function(args)
+            luasnip.lsp_expand(args.body)
+          end,
+        },
+        completion = { completeopt = 'menu,menuone,noinsert' },
+
+        -- For an understanding of why these mappings were
+        -- chosen, you will need to read `:help ins-completion`
+        --
+        -- No, but seriously. Please read `:help ins-completion`, it is really good!
+        mapping = cmp.mapping.preset.insert {
+          -- Select the [n]ext item
+          ['<C-n>'] = cmp.mapping.select_next_item(),
+          -- Select the [p]revious item
+          ['<C-p>'] = cmp.mapping.select_prev_item(),
+
+          -- Scroll the documentation window [b]ack / [f]orward
+          ['<C-b>'] = cmp.mapping.scroll_docs(-4),
+          ['<C-f>'] = cmp.mapping.scroll_docs(4),
+
+          -- Accept ([y]es) the completion.
+          --  This will auto-import if your LSP supports it.
+          --  This will expand snippets if the LSP sent a snippet.
+          --
+          ['<C-y>'] = cmp.mapping.confirm { select = true },
+
+          -- If you prefer more traditional completion keymaps,
+          -- you can uncomment the following lines
+          -- ['<CR>'] = cmp.mapping.confirm { select = true },
+          -- ['<Tab>'] = cmp.mapping.select_next_item(),
+          -- ['<S-Tab>'] = cmp.mapping.select_prev_item(),
+
+          -- Manually trigger a completion from nvim-cmp.
+          --  Generally you don't need this, because nvim-cmp will display
+          --  completions whenever it has completion options available.
+          ['<C-Space>'] = cmp.mapping.complete {},
+
+          -- Think of <c-l> as moving to the right of your snippet expansion.
+          --  So if you have a snippet that's like:
+          --  function $name($args)
+          --    $body
+          --  end
+          --
+          -- <c-l> will move you to the right of each of the expansion locations.
+          -- <c-h> is similar, except moving you backwards.
+          ['<C-l>'] = cmp.mapping(function()
+            if luasnip.expand_or_locally_jumpable() then
+              luasnip.expand_or_jump()
+            end
+          end, { 'i', 's' }),
+          ['<C-h>'] = cmp.mapping(function()
+            if luasnip.locally_jumpable(-1) then
+              luasnip.jump(-1)
+            end
+          end, { 'i', 's' }),
+
+          -- For more advanced Luasnip keymaps (e.g. selecting choice nodes, expansion) see:
+          --    https://github.com/L3MON4D3/LuaSnip?tab=readme-ov-file#keymaps
+        },
+        sources = {
+          {
+            name = 'lazydev',
+            -- set group index to 0 to skip loading LuaLS completions as lazydev recommends it
+            group_index = 0,
+          },
+          { name = 'nvim_lsp' },
+          { name = 'luasnip' },
+          { name = 'path' },
+          { name = 'cody' }, -- Sourcegraph's Cody LLM Autocomplete, using Anthropic's Claude by default
+        },
+      }
     end,
   },
 
@@ -902,7 +904,7 @@ require('lazy').setup({
         --  the list of additional_vim_regex_highlighting and disabled languages for indent.
         additional_vim_regex_highlighting = { 'ruby' },
       },
-      indent = { enable = true, disable = { 'ruby', 'python' } },
+      indent = { enable = false, disable = { 'ruby', 'python' } },
     },
     -- There are additional nvim-treesitter modules that you can use to interact
     -- with nvim-treesitter. You should go explore a few and see what interests you:

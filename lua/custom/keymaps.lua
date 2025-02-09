@@ -39,4 +39,23 @@ vim.keymap.set('n', '<leader>lr', '<cmd>ChatGPTRun<CR>', { desc = 'GPT [R]un' })
 
 -- vim.keymap.set({'n', 't'}, '<leader>tt', '<cmd>term<CR>', { desc = '[T]oggle [T]erminal' })
 
+vim.keymap.set({ 'n', 'v' }, '<leader>f', function()
+  if vim.fn.mode() == 'v' then
+    local start_pos = vim.fn.getpos "'<"
+    local end_pos = vim.fn.getpos "'>"
+
+    local buf_start = { line = start_pos[2], column = start_pos[3] }
+    local buf_end = { line = end_pos[2], column = end_pos[3] }
+
+    require('conform').format {
+      range = { start = { buf_start.line, buf_start.column }, ['end'] = { buf_end.line, buf_end.column } },
+      lsp_fallback = true,
+      async = false,
+      timeout_ms = 1000,
+    }
+  else
+    require('conform').format { async = true, lsp_fallback = true }
+  end
+end)
+
 return {}

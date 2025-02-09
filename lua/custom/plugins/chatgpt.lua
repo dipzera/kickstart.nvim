@@ -4,12 +4,11 @@ return {
   config = function()
     require('chatgpt').setup {
       openai_params = {
-        model = 'gpt-4o',
-        max_tokens = 4096,
+        model = 'gpt-4o-mini',
       },
-      chat = {
-        max_line_length = 9999,
-      },
+      -- chat = {
+      --   max_line_length = 9999,
+      -- },
     }
   end,
   dependencies = {

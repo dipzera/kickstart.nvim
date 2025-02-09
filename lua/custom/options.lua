@@ -32,15 +32,23 @@ vim.opt.listchars = { tab = '  ', trail = '·', nbsp = '␣' }
 -- Consider setting to true by default
 vim.g.editorconfig = false
 
+-- Somewhere from the internet
+vim.opt.ai = true
+vim.opt.si = true
+vim.opt.et = true
+vim.opt.sw = 2
+vim.opt.sr = true
+vim.opt.sts = 2
+
 -- ======== From Rob's config ========
 
 -- automatically indent new lines
 -- vim.opt.autoindent = true
 
 -- replace tabs with spaces automatically
-vim.opt.expandtab = true
+vim.opt.expandtab = false
 
--- vim.opt.tabstop = 2
+vim.opt.tabstop = 2
 
 vim.opt.ignorecase = false
 
